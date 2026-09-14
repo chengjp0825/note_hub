@@ -1,12 +1,23 @@
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
 const repoRoot = process.cwd();
 const docsRoot = path.join(repoRoot, 'docs');
 
-function getStagedMarkdownFiles() {
-  const output = execSync('git diff --cached --name-only --diff-filter=ACMR -- docs', {
+function getMarkdownFiles() {
+  const args = process.argv.slice(2);
+  const diffIndex = args.indexOf('--diff');
+  const diffRange = diffIndex === -1 ? null : args[diffIndex + 1];
+
+  if (diffIndex !== -1 && !diffRange) {
+    throw new Error('--diff requires a Git revision range, for example origin/main..HEAD');
+  }
+
+  const gitArgs = diffRange
+    ? ['diff', diffRange, '--name-only', '--diff-filter=ACMR', '--', 'docs']
+    : ['diff', '--cached', '--name-only', '--diff-filter=ACMR', '--', 'docs'];
+  const output = execFileSync('git', gitArgs, {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
   });
@@ -102,15 +113,15 @@ function main() {
   let stagedFiles;
 
   try {
-    stagedFiles = getStagedMarkdownFiles();
+    stagedFiles = getMarkdownFiles();
   } catch (error) {
-    console.error('[check:staged-doc-links] Failed to read staged files.');
+    console.error('[check:staged-doc-links] Failed to read changed files.');
     console.error(String(error));
     process.exit(1);
   }
 
   if (stagedFiles.length === 0) {
-    console.log('[check:staged-doc-links] No staged docs markdown files.');
+    console.log('[check:staged-doc-links] No matching docs markdown files.');
     process.exit(0);
   }
 
@@ -124,7 +135,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log(`[check:staged-doc-links] OK (${stagedFiles.length} staged file(s) checked).`);
+  console.log(`[check:staged-doc-links] OK (${stagedFiles.length} file(s) checked).`);
 }
 
 main();

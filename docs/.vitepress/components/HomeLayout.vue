@@ -10,7 +10,7 @@ const terminalLogs = ref([
   { type: 'info', text: 'NoteHub OS v1.0.0 (x86_64-linux-gnu)' },
   { type: 'info', text: 'Establishing secure connection to main branch... [OK]' },
   { type: 'warn', text: '警告：检测到野生 Bug。你的每一次 Commit 都在拯救同门。' },
-  { type: 'success', text: '输入 `help` 查看可用命令，或输入 `join` 获取联机大厅坐标。' }
+  { type: 'success', text: '输入 `help` 查看可用命令，或输入 `join` 查看项目与社区状态。' }
 ])
 
 onMounted(() => {
@@ -41,7 +41,7 @@ const executeCommand = async () => {
       terminalLogs.value.push(
         { type: 'success', text: 'AVAILABLE COMMANDS:' },
         { type: 'info', text: '  help   - 打印此帮助信息' },
-        { type: 'info', text: '  join   - 获取 GitHub 仓库链接与交流群入口' },
+        { type: 'info', text: '  join   - 查看 GitHub 仓库与社区状态' },
         { type: 'info', text: '  buffs  - 扫描社区联机增益模块' },
         { type: 'info', text: '  clear  - 清屏 (掉 SAN 值恢复)' }
       )
@@ -49,8 +49,8 @@ const executeCommand = async () => {
     case 'join':
       terminalLogs.value.push(
         { type: 'success', text: '>_ 正在生成跃迁门...' },
-        { type: 'info', text: 'GitHub 仓库: https://github.com/你的用户名/NoteHub' },
-        { type: 'info', text: '交流群入口: [在此处替换为二维码或链接]' }
+        { type: 'info', text: 'GitHub 仓库: https://github.com/chengjp0825/note_hub' },
+        { type: 'info', text: '交流社区: 筹备中' }
       )
       break
     case 'buffs':
@@ -134,7 +134,7 @@ const executeCommand = async () => {
           <img class="hero-logo-inline" src="/favicon.svg" alt="NoteHub Logo" />
           <h1 class="hero-title">NoteHub</h1>
         </div>
-        <p class="hero-lead">别在 DataSheet 里单排了，这儿有活人。</p>
+        <p class="hero-lead">别在数据手册里单排了，这儿有活人。</p>
         <p class="hero-sub">基于 Diátaxis 架构的赛博修理铺。拒绝纸上谈兵，专治三类疑难杂症：软件卡死、硬件漏电，以及面试官的无理取闹。</p>
         <div class="hero-actions">
           <a href="/microcontrollers/" class="btn btn-primary">接入节点</a>
@@ -169,7 +169,7 @@ const executeCommand = async () => {
             <span class="quad-tag tag-orange">Working · Action</span>
           </div>
           <h3>救火手册</h3>
-          <p>深夜排查软件BUG？主控跑飞无响应？别急着摔板子，这里提供针对真实翻车现场的精准排错 SOP，直接抄作业。</p>
+          <p>深夜排查软件 Bug？主控跑飞无响应？别急着摔板子，这里提供针对真实翻车现场的精准排错 SOP，直接抄作业。</p>
           <div class="quad-bar bar-orange"></div>
         </div>
 
@@ -216,7 +216,7 @@ const executeCommand = async () => {
           <div class="mod-icon">📚</div>
           <div class="mod-body">
             <h3>你知道吗</h3>
-            <p>那些"本该知道却总是忘记"的硬核基础。从 AC 耦合原理到服务迁“云”陷阱，从Git版本管理到信号完整性。主打一个非教科书式、不搭嘎的血泪经验。</p>
+            <p>那些“本该知道却总是忘记”的硬核基础。从 AC 耦合原理到服务迁“云”陷阱，从 Git 版本管理到信号完整性。主打一个非教科书式、不搭嘎的血泪经验。</p>
           </div>
           <div class="mod-arrow">→</div>
         </a>
@@ -251,8 +251,8 @@ const executeCommand = async () => {
         <div class="mod-card highlight-card" style="--delay: 6">
           <div class="mod-icon">🧪</div>
           <div class="mod-body">
-            <h3>正文会突然出现交互式 frame</h3>
-            <p>遇到难以理解的抽象概念时，正文会直接插入方便理解的「交互式」frame 和 canvas ，让你边拖参数边看结果。</p>
+            <h3>正文会突然出现交互式演示</h3>
+            <p>遇到难以理解的抽象概念时，正文会直接插入交互式演示，让你边拖参数边看结果。</p>
             <div class="mod-preview frame-preview" aria-hidden="true">
               <div class="frame-topbar">
                 <i></i><i></i><i></i>
@@ -283,7 +283,7 @@ const executeCommand = async () => {
           <span class="buff-emoji">🪦</span>
           <div class="buff-text">
             <h4>Bug 墓地</h4>
-            <p>埋葬着无数前辈的血泪史。从 FPGA 综合报错到 insomd 加载失败，看一眼少掉两根头发。</p>
+            <p>埋葬着无数前辈的血泪史。从 FPGA 综合报错到 insmod 加载失败，看一眼少掉两根头发。</p>
           </div>
         </div>
         <div class="buff-item" style="--delay: 7">
@@ -320,7 +320,7 @@ const executeCommand = async () => {
           <button type="button" class="terminal-chip" @click="runTerminalShortcut('help')">help</button>
           开始，或者点击
           <button type="button" class="terminal-chip terminal-chip-join" @click="runTerminalShortcut('join')">join</button>
-          加入。
+          查看社区状态。
         </p>
       </div>
 
@@ -359,8 +359,7 @@ const executeCommand = async () => {
       </div>
 
       <div class="mobile-links">
-        <a href="https://github.com/你的用户名/NoteHub" class="btn btn-small btn-outline" target="_blank">发起 PR</a>
-        <a href="#" class="btn btn-small btn-outline">加入群聊</a>
+        <a href="https://github.com/chengjp0825/note_hub" class="btn btn-small btn-outline" target="_blank" rel="noopener noreferrer">发起 PR</a>
       </div>
     </section>
 
@@ -745,6 +744,7 @@ const executeCommand = async () => {
 .quad-card:hover {
   box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
+  border-color: var(--text-3);
 }
 
 /* Left accent bars */
@@ -1198,6 +1198,9 @@ const executeCommand = async () => {
 }
 
 @media (max-width: 560px) {
+  .hero { padding-bottom: 3rem; }
+  .section { padding-top: 3rem; padding-bottom: 3rem; }
+  .section-header { margin-bottom: 2rem; }
   .quad-grid { grid-template-columns: 1fr; }
   .quad-large, .quad-tall { grid-column: span 1; grid-row: auto; }
   .buff-row  { grid-template-columns: 1fr; }

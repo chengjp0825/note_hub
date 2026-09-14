@@ -37,7 +37,7 @@
 
 发现 Bug 但没时间修？有极好的点子想探讨？那就提 Issue 吧：
 
-1. 返回本项目的[主仓库页面](https://github.com/chengjp0825/doc_base_vitepress)。
+1. 返回本项目的[主仓库页面](https://github.com/chengjp0825/note_hub)。
 2. 点击上方的 **Issues** 选项卡。
 3. 点击绿色的 **New issue** 按钮。
 4. 根据你的意图选择相应的模版（Bug 报告 / 功能建议 / 提问 等）。

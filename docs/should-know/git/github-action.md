@@ -22,7 +22,7 @@ on:
 # ------------------------------------------------------------------------------
 env:
   REGISTRY: ghcr.io # 指定使用的镜像仓库为 GitHub Container Registry
-  IMAGE_NAME: ${{ github.repository }} # 自动获取格式为 "用户名/项目名" (例如: chengjp0825/NoteHub)
+  IMAGE_NAME: ${{ github.repository }} # 自动获取格式为 "用户名/项目名" (例如: chengjp0825/note_hub)
 
 # ------------------------------------------------------------------------------
 # 任务集 (Jobs)：包含 build (构建) 和 deploy (部署) 两个阶段

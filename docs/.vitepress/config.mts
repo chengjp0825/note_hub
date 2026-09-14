@@ -1,6 +1,6 @@
-import { withMermaid } from 'vitepress-plugin-mermaid'
+import { MermaidMarkdown } from 'vitepress-plugin-mermaid'
 
-export default withMermaid({
+export default {
   lang: 'zh-CN',
   title: 'NoteHub',
   description: '笔记与技术分享',
@@ -11,7 +11,17 @@ export default withMermaid({
 
   // 1. 配置 Markdown
   markdown: {
-    math: true
+    math: true,
+    config(md) {
+      MermaidMarkdown(md)
+    }
+  },
+
+  // Mermaid is loaded on demand and ships a few intentionally large diagram chunks.
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 750
+    }
   },
 
   // Mermaid 插件配置
@@ -118,7 +128,7 @@ export default withMermaid({
             { text: 'AC 耦合', link: '/should-know/si-pi/ac-coupling' },
             { text: '差分信号', link: '/should-know/si-pi/differential-signaling-lvds' },
             { text: '预加重与去加重', link: '/should-know/si-pi/pre-emphasis-de-emphasis' },
-            { text: '滤波器设计', link: '/should-know/filter-design' },
+            { text: '滤波器设计', link: '/under-construction' },
           ],
         },
         {
@@ -193,4 +203,4 @@ export default withMermaid({
       ],
     },
   },
-})
+}

@@ -21,7 +21,7 @@ on:
 env:
   # 镜像仓库：使用 GitHub 官方的容器注册表 (GitHub Container Registry)
   REGISTRY: ghcr.io 
-  # 镜像名称：自动获取 "你的用户名/项目名" (例如 chengjp0825/NoteHub)，保证命名规范
+  # 镜像名称：自动获取 "你的用户名/项目名" (例如 chengjp0825/note_hub)，保证命名规范
   IMAGE_NAME: ${{ github.repository }} 
 
 # ------------------------------------------------------------------------------
@@ -112,26 +112,52 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}      # SSH 私钥，确保通信加密防中间人攻击
           
           script: |
+            set -e
+
             # 1. 宿主机身份认证：使用你的 Token 登录 GHCR，确保有权限拉取私有镜像
             echo "${{ secrets.GHCR_TOKEN }}" | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
             # 2. 静默拉取最新镜像：加入 -q 参数隐藏繁杂的下载进度条，防止撑爆 SSH 终端输出缓冲
             sudo docker pull -q ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             
-            # 3. 清理旧版本实例：强制删除名为 vitepress-site 的旧容器
-            # "|| true" 是一种架构容错设计：即使这是第一次部署(容器不存在)，报错也不会中断脚本执行
-            sudo docker rm -f vitepress-site || true
-            
-            # 4. 启动新版 NoteHub 容器
-            sudo docker run -d \
-              --name vitepress-site \
-              -p 127.0.0.1:8080:80 \
-              --restart always \
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            # 3. 保留旧容器作为回滚副本，再释放生产端口
+            sudo docker rm -f vitepress-site-rollback >/dev/null 2>&1 || true
+            if sudo docker container inspect vitepress-site >/dev/null 2>&1; then
+              sudo docker stop vitepress-site
+              sudo docker rename vitepress-site vitepress-site-rollback
+            fi
+
+            # 4. 启动新版 NoteHub 并检查 HTTP 服务
+            deployment_ok=false
+            if sudo docker run -d \
+                --name vitepress-site \
+                -p 127.0.0.1:8080:80 \
+                --restart always \
+                ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest; then
+              for attempt in 1 2 3 4 5; do
+                if sudo docker exec vitepress-site wget -q --spider http://127.0.0.1/; then
+                  deployment_ok=true
+                  break
+                fi
+                sleep 2
+              done
+            fi
+
+            # 5. 健康检查失败时自动恢复上一版容器
+            if [ "$deployment_ok" = true ]; then
+              sudo docker rm -f vitepress-site-rollback >/dev/null 2>&1 || true
+            else
+              sudo docker rm -f vitepress-site >/dev/null 2>&1 || true
+              if sudo docker container inspect vitepress-site-rollback >/dev/null 2>&1; then
+                sudo docker rename vitepress-site-rollback vitepress-site
+                sudo docker start vitepress-site
+              fi
+              exit 1
+            fi
             # 【安全参数解析】: 
             # -p 127.0.0.1:8080:80 强制将容器暴露的 80 端口绑定在宿主机的内网(本地)环回地址。
             # 这意味着外部黑客无法通过 http://IP:8080 直接访问容器，流量必须且只能经过你配置的 Nginx 反向代理与 SSL 卸载。
             
-            # 5. 系统瘦身：清理被新镜像顶替下来的悬空(dangling)无用镜像，释放云服务器宝贵的 SSD 空间。
+            # 6. 系统瘦身：清理被新镜像顶替下来的悬空(dangling)无用镜像，释放云服务器宝贵的 SSD 空间。
             # 末尾加上 '&' 让其在后台静默运行，不阻塞当前部署流水线的完成状态，让你的 Actions 绿灯亮得更快！
             sudo docker image prune -f &

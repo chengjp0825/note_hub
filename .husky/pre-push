@@ -7,7 +7,7 @@ if git diff origin/main..HEAD --name-only -- docs | grep -E '\.(md|mdx)$' >/dev/
   git diff origin/main..HEAD --name-only -- docs | grep -E '\.(md|mdx)$' | while read file; do
     echo "  - $file"
   done
-  npm run check:staged-doc-links
+  npm run check:staged-doc-links -- --diff origin/main..HEAD
 else
   echo "[pre-push] No doc changes in these commits."
 fi
