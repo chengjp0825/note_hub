@@ -43,7 +43,7 @@ jobs:
     steps:
       # --- 步骤 1：拉取源码 ---
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # fetch-depth: 1 开启浅克隆。我们不需要 Git 历史记录，这能节省几秒的拉取时间。
           # 注意：如果你的 VitePress 需要读取 Git 历史来生成 "最后更新时间"，请将此值改为 0。
@@ -51,7 +51,7 @@ jobs:
 
       # --- 步骤 2：配置极速 Node.js 环境 (提速核心) ---
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '22' # 匹配你依赖树要求的最高 Node 版本，避免 EBADENGINE 警告
           cache: 'npm'       # 自动开启 npm 模块级别的缓存，实现秒级依赖安装
@@ -70,20 +70,20 @@ jobs:
 
       # --- 步骤 4：初始化 Docker 高级构建引擎 ---
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       # --- 步骤 5：登录 GitHub 容器镜像仓库 ---
       - name: Log in to the Container registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}         # 触发 Actions 的用户
-          password: ${{ secrets.GHCR_TOKEN }}   # 读取项目 Settings -> Secrets 中的 Personal Access Token
+          password: ${{ secrets.GITHUB_TOKEN }} # 使用当前工作流的短期令牌，权限由 jobs.build.permissions 控制
 
       # --- 步骤 6：基于极简 Dockerfile 打包并推送镜像 ---
       # 此时的 Dockerfile 只需要 FROM nginx:alpine 并 COPY dist 目录即可，极为迅速。
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: . # 构建上下文限定在当前根目录
           push: true # 构建成功后立即推送到云端仓库
@@ -101,6 +101,9 @@ jobs:
   deploy:
     needs: build # 强依赖：如果 build 阶段失败，deploy 阶段将自动取消，保护生产环境
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     steps:
       # --- 步骤 7：通过 SSH 登录宿主机执行更新脚本 ---
       - name: Deploy via SSH
@@ -114,8 +117,8 @@ jobs:
           script: |
             set -e
 
-            # 1. 宿主机身份认证：使用你的 Token 登录 GHCR，确保有权限拉取私有镜像
-            echo "${{ secrets.GHCR_TOKEN }}" | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # 1. 宿主机身份认证：使用当前工作流的短期令牌登录 GHCR
+            echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
             # 2. 静默拉取最新镜像：加入 -q 参数隐藏繁杂的下载进度条，防止撑爆 SSH 终端输出缓冲
             sudo docker pull -q ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
