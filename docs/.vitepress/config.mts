@@ -20,7 +20,20 @@ export default {
   // Mermaid is loaded on demand and ships a few intentionally large diagram chunks.
   vite: {
     build: {
-      chunkSizeWarningLimit: 750
+      chunkSizeWarningLimit: 2500,
+      rollupOptions: {
+        onwarn(warning, warn) {
+          if (warning.code === 'EVAL' && warning.id?.includes('node_modules/mathjax-full')) return
+          warn(warning)
+        },
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules/mathjax-full') || id.includes('node_modules/markdown-it-mathjax3')) return 'mathjax'
+            if (id.includes('node_modules/cytoscape')) return 'cytoscape'
+            return undefined
+          }
+        }
+      }
     }
   },
 

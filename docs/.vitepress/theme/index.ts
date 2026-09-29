@@ -2,9 +2,10 @@
 // docs/.vitepress/theme/index.ts
 import DefaultTheme from 'vitepress/theme'
 import { defineAsyncComponent } from 'vue'
-import KnowledgeGraph from '../components/KnowledgeGraph.vue'
 import './style.css'
 import './custom.css'
+
+const KnowledgeGraph = defineAsyncComponent(() => import('../components/KnowledgeGraph.vue'))
 
 export default {
   extends: DefaultTheme,
