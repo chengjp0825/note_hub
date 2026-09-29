@@ -1,0 +1,12 @@
+id: allwinner-ethernet-throughput-009
+question: 千兆网口吞吐量异常时，如何判断问题属于硬件、驱动还是网络链路？
+roles: [hardware, embedded-linux]
+companies: [全志科技]
+topic: 通信与网络
+tags: [以太网]
+answers:
+  hardware: |
+    参考回答：先确认链路协商速率、双工、MTU 和测试工具，再用 `ethtool` 查看 link、CRC/FCS、丢包和 PHY 统计，用 iperf3 分别测试单向/双向吞吐。若 10/100 正常而 1000 异常，优先检查 RGMII 时钟延迟、差分/共模、电源噪声、磁性器件和走线；若多系统都异常偏硬件，只有某内核/驱动异常则转向驱动和 DMA/NAPI。Linux PHY 文档指出 RGMII 延迟不匹配会出现 CRC 错误、丢包或降速。
+    参考资料：[Linux PHY 文档](https://docs.kernel.org/networking/phy.html)。
+  embedded-linux: |
+    参考回答：软件侧先固定测试条件，用 `ethtool eth0`、`ethtool -S eth0`、`ip -s link` 和 iperf3 采集协商、错误计数、队列和吞吐；再检查设备树 `phy-mode`、RGMII delay、驱动日志、DMA ring、NAPI 和中断亲和性。用另一块板/另一条线/另一内核做交叉验证，才能区分硬件链路、驱动配置和网络对端瓶颈。

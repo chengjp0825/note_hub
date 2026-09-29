@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "questions": {
+    "mipi-debug-003": {
+      "answers": {
+        "hardware": "从供电、连接器、阻抗连续性、差分对对称性和时钟质量开始；优先排除物理层边界问题。",
+        "embedded-linux": "核对 sensor 驱动、lane 数、时钟频率、像素格式与 media pipeline 配置，并抓取 CSI 错误计数确认问题出在链路还是帧处理。",
+        "fpga": "检查 D-PHY 接收状态机、字节对齐、虚拟通道和 FIFO 跨时钟域。用内部逻辑分析器先证明错误是否在进入图像处理链路之前出现。"
+      }
+    }
+  }
+}

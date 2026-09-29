@@ -1,0 +1,14 @@
+id: nova-rgmii-length-004
+question: RGMII 接口的等长控制要求是多少？总线长度是否建议不超过 12 英寸？实际设计中如何控制？
+roles: [hardware, embedded-linux, fpga]
+companies: [诺瓦星云]
+topic: 高速接口与 FPGA
+tags: [以太网, 时钟与时序]
+answers:
+  hardware: |
+    参考回答：RGMII 的关键不是把所有线机械地做成同长，而是让 TX/RX 数据相对各自时钟满足接收端 setup/hold。Linux PHY 文档给出的典型需要约 1.5–2ns 时钟与数据延迟；延迟可由 PHY、MAC 或 PCB 提供，但只能由一处负责，避免重复加延迟。PCB 上按器件约束控制同组 skew、参考平面和阻抗，12 英寸不是通用硬上限，实际长度由 PHY/MAC 时序、介质传播延迟和接口器件数据手册决定。最后用 TDR/示波器/误码和 10/100/1000 全速率测试验证。
+    参考资料：[Linux PHY RGMII 文档](https://docs.kernel.org/networking/phy.html)。
+  embedded-linux: |
+    参考回答：软件侧核对设备树 `phy-mode`（`rgmii`、`rgmii-txid`、`rgmii-rxid`、`rgmii-id`）与板级实际延迟的对应关系，并通过 PHY 寄存器读回确认。延迟不匹配常见表现是千兆丢包/CRC 错误而 10/100 正常。
+  fpga: |
+    参考回答：FPGA 侧把 I/O delay、时钟相位、约束和板级走线统一进时序预算，用静态时序和板级波形验证，不要同时在 FPGA、PHY 和 PCB 重复补偿。

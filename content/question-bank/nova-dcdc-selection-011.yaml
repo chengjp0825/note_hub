@@ -1,0 +1,9 @@
+id: nova-dcdc-selection-011
+question: 额外选用了哪些电源芯片？使用过哪些 DCDC 型号？
+roles: [hardware]
+companies: [诺瓦星云]
+topic: 电源与硬件设计
+tags: [电源设计, 器件选型, DCDC]
+answers:
+  hardware: |
+    参考回答：具体 DCDC 料号要从项目 BOM/原理图回答，并说明每路 Vin、Vout、Iout、开关频率、同步/非同步、反馈/使能、封装、热设计和替代料。选型流程是先定电源树和最坏负载，再比较效率、纹波、瞬态、EMI、保护、供应周期和参考布局；最后按 datasheet 计算电感/电容/补偿并做样机验证。不能把通用推荐型号冒充项目实际用料。

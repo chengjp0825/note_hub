@@ -1,0 +1,13 @@
+id: xinkailai-mcu-round1-ethercat-dc-020
+question: >-
+  EtherCAT 的基础概念是什么？相比普通以太网，分布式时钟 DC 解决了什么问题？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: 通信与网络
+tags: [工业总线, 以太网]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - EtherCAT 由主站发出帧，沿途从站在帧经过时即时读取/插入数据，形成高效率、低延迟的工业实时通信。
+    - DC 通过参考时钟和同步校正，让多个从站的采样、输出和运动控制保持确定的时间关系，降低节点晶振偏差带来的抖动。
+    - 要说明拓扑、周期、同步误差和故障诊断，并区分普通以太网吞吐与确定性实时性的差异。

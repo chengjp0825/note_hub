@@ -1,0 +1,78 @@
+company: 诺瓦星云
+location: 西安
+role: 硬件工程师
+year: null
+round: 一面
+platform: 抖音
+url: null
+author: 抖音 UP 主
+source_type: 平台 UP 主整理
+transcription: 逐字整理
+questions:
+  - raw_question: 设计的 RK3568 高速网关和 ZYNQ-7045 核心板分别用于什么应用场景？
+    classification: PROJECT
+    question_bank_id: nova-rk3568-zynq-application-001
+  - raw_question: RK3568 核心板的 10 层板是如何设计的？叠层、布局和布线有哪些考虑？
+    classification: GENERALIZABLE
+    question_bank_id: nova-rk3568-stackup-002
+  - raw_question: 千兆以太网 PHY 选用的是什么芯片？
+    classification: GENERALIZABLE
+    question_bank_id: nova-ethernet-phy-003
+  - raw_question: RGMII 接口的等长控制要求是多少？总线长度是否建议不超过 12 英寸？实际设计中如何控制？
+    classification: GENERAL
+    question_bank_id: nova-rgmii-length-004
+  - raw_question: 核心板主要集成了哪些器件？是否包括两颗 LPDDR4/4X、eMMC 8GB 等？
+    classification: PROJECT
+    question_bank_id: nova-core-board-components-005
+  - raw_question: 核心板与底板通过什么方式连接？
+    classification: PROJECT
+    question_bank_id: nova-board-connection-006
+  - raw_question: 你项目里面的 MIPI 接口接了哪些东西？
+    classification: PROJECT
+    question_bank_id: nova-mipi-interface-007
+  - raw_question: PCIe 和 SATA 在你的板卡中分别用于什么功能？
+    classification: PROJECT
+    question_bank_id: nova-pcie-sata-008
+  - raw_question: SATA 工作在什么速率？理论带宽和实际传输速率大概是多少？
+    classification: GENERAL
+    question_bank_id: nova-sata-bandwidth-009
+  - raw_question: 你的原理图设计是否完全参考厂家 demo？做了哪些调整？电源设计方面有哪些改动？
+    classification: PROJECT
+    question_bank_id: nova-reference-design-power-010
+  - raw_question: 你额外选用了哪些电源芯片？使用过哪些 DCDC 型号？
+    classification: GENERALIZABLE
+    question_bank_id: nova-dcdc-selection-011
+  - raw_question: 常用 DCDC 的电流规格有哪些？除了 2A，还用到几安培的？
+    classification: GENERALIZABLE
+    question_bank_id: nova-dcdc-current-012
+  - raw_question: ZYNQ-7045 平台的电源设计是否涉及这些 DCDC 规格？
+    classification: PROJECT
+    question_bank_id: nova-zynq-power-013
+  - raw_question: 功耗如何估算？是否使用 XPE？在 XPE 中需要填写哪些参数？是否预留余量？
+    classification: GENERAL
+    question_bank_id: nova-power-estimation-014
+  - raw_question: 你如何测试电源纹波、上电时序和时钟信号？
+    classification: GENERAL
+    question_bank_id: nova-power-test-015
+  - raw_question: 纹波是否所有电压都要求控制在 30mV 以内？不同电压轨的要求如何确定？
+    classification: GENERAL
+    question_bank_id: nova-ripple-spec-016
+  - raw_question: 3.3V 以下电源轨是否统一按 30mV 控制？ZYNQ-7045 等有特殊要求时，实际能否达到 10mV 以内？
+    classification: GENERAL
+    question_bank_id: nova-low-voltage-ripple-017
+  - raw_question: 时钟信号如何设计与测试？如何测试时钟抖动？
+    classification: GENERAL
+    question_bank_id: nova-clock-jitter-018
+  - raw_question: 针对不同频率信号，如何选择示波器探头带宽？例如 RGMII 125MHz 信号应选多大带宽的探头？带宽比例大概是多少？
+    classification: GENERAL
+    question_bank_id: nova-probe-bandwidth-019
+  - raw_question: 针对 GTX 高速收发器，你具体学习并完成了哪些工作？
+    classification: PROJECT
+    question_bank_id: nova-gtx-work-020
+  - raw_question: GTX 在你的单板中具体用于什么？是板间互联、对外接口还是其他用途？
+    classification: PROJECT
+    question_bank_id: nova-gtx-use-021
+  - raw_question: 如果从 12 层板压缩到 10 层，设计难度体现在哪些方面？板层减少对成本和技术有什么影响？
+    classification: GENERAL
+    question_bank_id: nova-layer-reduction-022
+

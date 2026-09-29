@@ -1,0 +1,13 @@
+id: xinkailai-mcu-round1-architecture-013
+question: >-
+  半导体设备里的子控制板 MCU 和上位机如何配合？你是否做过类似的控制板？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: 测试与系统工程
+tags: [系统架构]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 说明上位机负责配方、调度、界面和数据管理，MCU 负责实时采集、闭环控制、执行器和安全联锁。
+    - 讲清通信链路、命令/状态模型、时间戳、异常上报、升级和断线后的安全策略。
+    - 结合自己做过的板卡说明资源、实时性、可靠性和调试边界，避免只描述模块名称。

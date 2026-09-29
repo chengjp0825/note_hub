@@ -1,0 +1,11 @@
+id: nova-gtx-work-020
+question: 针对 GTX 高速收发器，具体学习并完成了哪些工作？
+roles: [hardware, fpga]
+companies: [诺瓦星云]
+topic: 高速接口与 FPGA
+tags: [FPGA, 高速串行接口]
+answers:
+  hardware: |
+    参考回答：建议按“规格→配置→仿真→板级调试→验证”讲清完成的工作：从协议和线速率确定 lane、参考时钟、编码和通道预算；使用 Vivado Transceiver Wizard/官方 UG476 配置 TX/RX、PLL、均衡和复位；用仿真或 IBIS/S 参数评估通道；上板通过 PRBS、回环、眼图和误码计数定位问题；最后沉淀约束、寄存器脚本和 bring-up 文档。若是具体项目，应列出自己实际负责的模块和测量数据。
+  fpga: |
+    参考回答：重点说明 GT wrapper、用户时钟、CDC、协议 IP、link training 和错误恢复的实现，展示如何用 Vivado 报告、ILA、GT status 和 PRBS 结果闭环。不要把“调用了 IP”描述成完成了全部收发器调试。

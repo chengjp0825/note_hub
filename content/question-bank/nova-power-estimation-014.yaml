@@ -1,0 +1,12 @@
+id: nova-power-estimation-014
+question: 功耗如何估算？是否使用 XPE？在 XPE 中需要填写哪些参数，是否预留余量？
+roles: [hardware, fpga]
+companies: [诺瓦星云]
+topic: 电源与硬件设计
+tags: [电源设计]
+answers:
+  hardware: |
+    参考回答：功耗估算分为器件静态/动态、外设、存储和电源转换损耗，并按典型、最大活动、启动和环境温度建立电源树。对 Zynq-7045 可用 AMD XPE 早期估算：输入器件、频率、资源利用率、I/O 翻转率、GT/DDR 配置、温度和电压等参数，得到各资源和电源轨的功耗/电流；实现后再用 Vivado 功耗报告校准。余量应覆盖模型误差、器件容差、老化和瞬态，不能简单统一加一个百分比，最终还要实测电流、温升和最坏负载。
+    参考资料：[AMD XPE UG440](https://docs.amd.com/r/2024.2-English/ug440-xilinx-power-estimator/Using-XPE-Wizards)。
+  fpga: |
+    参考回答：FPGA 侧重点是把综合/布局后的资源、时钟、I/O、BRAM/DSP、GT、DDR 和活动率导入 XPE/XPA 或 Vivado Power Report，并按电源轨核对 regulator 额定电流、去耦和热设计。XPE 是早期估算，不替代实现后功耗报告和样机实测。

@@ -1,0 +1,13 @@
+id: xinkailai-mcu-round2-software-timer-003
+question: >-
+  软件定时器和硬件定时器有什么区别？软件定时器回调函数里有哪些禁忌？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: MCU 与嵌入式软件
+tags: [FreeRTOS, 中断与定时器, MCU]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 硬件定时器由外设计数，抖动小、精度高，适合捕获、PWM 和严格时序；软件定时器依赖系统节拍和定时器任务，适合非硬实时周期任务。
+    - 回调中不能阻塞、不能执行长耗时计算、不能调用可能再次阻塞的 API，也不应直接做复杂 IO。
+    - 回调只做状态置位或发送通知，把实际工作交给任务；同时检查定时器任务栈、优先级和回调执行时间。

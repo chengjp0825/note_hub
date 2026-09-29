@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "questions": {
+    "rgmii-length-001": {
+      "answers": {
+        "hardware": "## 结论\n\nRGMII 在一个时钟周期的上、下沿都传输数据，走线偏差会直接压缩建立/保持时间裕量。\n\n先根据 PHY/MAC 是否内置时钟延迟确定 PCB 补偿策略，再按器件手册的时序预算约束数据线与时钟线的长度差。",
+        "embedded-linux": "Linux 驱动侧要确认设备树的 `phy-mode` 与硬件延迟设计一致，例如 `rgmii-id`、`rgmii-rxid`。",
+        "fpga": "FPGA 侧要把 IDELAY/ODELAY、IO 时序约束与外部板级延迟作为一个整体预算。"
+      }
+    }
+  }
+}

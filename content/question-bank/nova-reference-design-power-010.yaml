@@ -1,0 +1,9 @@
+id: nova-reference-design-power-010
+question: 原理图设计是否完全参考厂家 demo？做了哪些调整？电源设计方面有哪些改动？
+roles: [hardware]
+companies: [诺瓦星云]
+topic: 电源与硬件设计
+tags: [电源设计, PCB]
+answers:
+  hardware: |
+    参考回答：厂家 demo 是起点，不是可直接复制的量产设计。应逐项核对输入范围、负载/瞬态、效率、纹波、EMI、热、器件可得性和 PCB 叠层，说明实际改动了哪些反馈电阻、补偿、磁性件、去耦、保护、使能/PG 和布局走线，并给出仿真、波形和温升证据。任何改动都要回到对应 datasheet 的限制和参考布局验证，不能只凭“参考过 demo”作结论。

@@ -1,0 +1,14 @@
+id: xinkailai-mcu-round2-spi-multi-slave-004
+question: >-
+  SPI 挂载多个从设备后出现偶发通信失败，应该如何一步步排查？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: 通信与网络
+tags: [板级总线, 通信协议, SPI]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 先确认每个 CS 是否独立、默认电平是否正确，以及未选中的从设备是否真正释放 MISO。
+    - 用示波器核对 CS、SCK、MOSI、MISO 的时序、CPOL/CPHA、频率和片选建立保持时间。
+    - 降低速率并单设备隔离复现，再检查线长、串扰、电平转换、电源和地弹噪声。
+    - 软件侧增加超时、总线互斥、错误重试和设备复位，保留原始波形与错误计数。

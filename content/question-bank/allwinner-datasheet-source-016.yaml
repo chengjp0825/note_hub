@@ -1,0 +1,9 @@
+id: allwinner-datasheet-source-016
+question: 查找 DC-DC 芯片效率时，应使用哪些官方文档或工具？工具结果与 Datasheet 哪个更可信？
+roles: [hardware]
+companies: [全志科技]
+topic: 电源与硬件设计
+tags: [电源设计, 器件选型]
+answers:
+  hardware: |
+    参考回答：先以芯片最新版本 datasheet、参考设计和官方 WEBENCH/计算表为准，确认输入输出范围、负载曲线、效率测试条件、频率、温度和布局要求。工具适合快速扫参数和做初步选型，datasheet 的额定值、典型曲线及测试条件才是设计依据；若工具与 datasheet 不一致，应核对版本、工作点、器件容差和测量定义，必要时向原厂 FAE 求证。最终效率必须在样机上按输入电压、负载、温度和测试仪器校准条件复测。

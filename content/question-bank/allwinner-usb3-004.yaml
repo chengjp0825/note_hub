@@ -1,0 +1,12 @@
+id: allwinner-usb3-004
+question: USB 3.0 的速率是多少？USB 2.0 除 480Mbps 外还有哪些速率模式？
+roles: [hardware, embedded-linux]
+companies: [全志科技]
+topic: 通信与网络
+tags: [USB]
+answers:
+  hardware: |
+    参考回答：USB 3.0（USB 3.2 Gen 1）信号速率为 5Gb/s；USB 2.0 有 Low-speed 1.5Mb/s、Full-speed 12Mb/s、High-speed 480Mb/s。这里的 Gb/s 是线路速率，不等于应用层 MB/s，实际吞吐还受编码、协议、主机控制器、存储和调度开销影响。设计时分别核对 SuperSpeed TX/RX 差分阻抗、回损、连接器、ESD 器件和 USB2 D+/D−，并验证降速和兼容性。
+    参考资料：[USB-IF 文档中心](https://www.usb.org/documents)。
+  embedded-linux: |
+    参考回答：Linux 侧用 `lsusb -t` 看实际协商到的速度和链路层级，用 `usbtop` 或应用吞吐测试区分协议与存储瓶颈；不要仅凭设备标称“USB3”判断已经以 5Gb/s 运行。USB-IF 的命名将 5/10/20Gbps 分别对应 USB 3.2 Gen 1/2/2x2。

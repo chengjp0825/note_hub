@@ -1,0 +1,10 @@
+id: allwinner-ldo-efficiency-001
+question: 如何提高 LDO 的效率？
+roles: [hardware]
+companies: [全志科技]
+topic: 电源与硬件设计
+tags: [电源设计, 模拟电路]
+answers:
+  hardware: |
+    参考回答：LDO 的近似效率为 `η≈Vout/Vin`，损耗为 `(Vin−Vout)×Iout`，所以首选是降低压差、把大压差转换交给 Buck，并选择满足 dropout 的 LDO。还要按负载电流、静态电流、PSRR、噪声、稳定电容和热阻选型；不要为了“效率”牺牲瞬态、噪声或可靠性。若输入输出接近且电流较大，应优先评估 DCDC+LDO 两级方案，并在最坏 Vin、Iout、环境温度下核算结温。
+    参考资料：[TI LDO Basics](https://www.ti.com/product-category/power-management/ldo-basics-ebook.html)。

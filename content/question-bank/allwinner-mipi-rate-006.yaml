@@ -1,0 +1,12 @@
+id: allwinner-mipi-rate-006
+question: MIPI 接口连接屏幕时，实际运行速率大概是什么范围？
+roles: [hardware, embedded-linux]
+companies: [全志科技]
+topic: 高速接口与 FPGA
+tags: [MIPI]
+answers:
+  hardware: |
+    参考回答：MIPI 屏链路的实际速率不是固定“一个数”，由分辨率、刷新率、颜色位宽、lane 数和 blanking 决定。可用 `lane_rate≈pixel_rate×bits_per_pixel/lanes`（再考虑协议开销）估算，再与 SoC D-PHY、面板和 PCB 能力取小值。最终以 DRM/设备树配置和示波器/协议分析仪测得的 HS 速率为准；MIPI D-PHY 同时包含高速差分传输和低功耗状态，不能把像素时钟直接当作 lane rate。
+    参考资料：[MIPI D-PHY 官方介绍](https://www.mipi.org/specifications/d-phy)。
+  embedded-linux: |
+    参考回答：从 Linux 侧读取面板 mode、lane 数、bpp 和驱动日志，核对设备树 `data-lanes`、时钟/速率配置与面板 datasheet；出现花屏时再结合 PHY lock、D-PHY 错误计数和抓波形判断是速率、时序还是信号完整性问题。不要只凭“能点亮”推断链路已经在目标速率稳定运行。

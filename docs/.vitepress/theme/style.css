@@ -7,6 +7,95 @@
   --vp-c-brand-3: #93c5fd;
 }
 
+/* 题库 Sidebar 的筛选链接共享路径与定位 hash，按默认路径规则会同时高亮。
+   页面运行时会根据 query 参数补充 question-bank-current，只覆盖题库页。 */
+body.question-bank-sidebar-ready .VPSidebarItem.is-active > .item > .link > .text {
+  color: var(--vp-c-text-2) !important;
+}
+
+body.question-bank-sidebar-ready .VPSidebarItem.is-active > .item > .indicator {
+  background-color: transparent !important;
+}
+
+body.question-bank-sidebar-ready .VPSidebarItem.question-bank-current > .item > .link > .text {
+  color: var(--vp-c-brand-1) !important;
+}
+
+body.question-bank-sidebar-ready .VPSidebarItem.question-bank-current > .item > .indicator {
+  background-color: var(--vp-c-brand-1) !important;
+}
+
+/* 题库题卡由虚拟列表按实际 DOM 高度测量；仅提供最小高度，不截断长题干。 */
+body:has(.bank) .card {
+  box-sizing: border-box;
+  height: auto;
+  min-height: 112px;
+}
+
+body:has(.bank) .card > strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+body:has(.bank) .card small {
+  flex-wrap: wrap;
+}
+
+/* 正式专题保持单行；空间不足时只允许专题组自身横向滚动，避免页面级溢出。 */
+body:has(.bank) #filters-topic > div {
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+body:has(.bank) #filters-topic button {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  min-height: 40px;
+  line-height: 1.25;
+  padding-inline: 10px;
+  white-space: nowrap;
+}
+
+body:has(.bank) #filters-topic > div.expanded {
+  flex-wrap: wrap !important;
+  overflow-x: visible;
+  overflow-y: visible;
+  scrollbar-width: auto;
+}
+
+/* 技术标签折叠与展开共用同一个自然换行流；移动端仍保持原有横向滚动。 */
+body:has(.bank) #filters-tag > div {
+  align-items: center;
+  gap: 8px;
+}
+
+body:has(.bank) #filters-tag > div > button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  body:has(.bank) #filters-tag > div {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+}
+
+/* VitePress 顶部导航在平板宽度会保留一条超出内容；题库页不让它扩大页面滚动宽度。 */
+body:has(.bank) .VPNav {
+  overflow-x: clip;
+}
+
 .dark {
   /* 将深色模式的背景调整为更深邃的纯黑色 */
   --vp-c-bg: #0a0a0a;
@@ -267,4 +356,3 @@
     display: block;
   }
 }
-

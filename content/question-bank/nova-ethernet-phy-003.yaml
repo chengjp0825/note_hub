@@ -1,0 +1,11 @@
+id: nova-ethernet-phy-003
+question: 千兆以太网 PHY 选用的是什么芯片？选型时重点考虑哪些指标？
+roles: [hardware, embedded-linux]
+companies: [诺瓦星云]
+topic: 通信与网络
+tags: [以太网]
+answers:
+  hardware: |
+    参考回答：实际 PHY 型号必须以原理图/BOM 为准。选型关注 MAC 接口（RGMII/SGMII）、10/100/1000 支持、时钟与内部延迟、供电电压、封装和温度等级、EEE/时间同步、诊断能力、磁性器件、EMC 和 Linux 驱动支持。还要核对 PHY 的 strap/MDIO 地址、复位时序、RGMII delay 由 PHY/MAC/PCB 哪一侧提供，并用 `ethtool`、误码/吞吐和温度测试验证。
+  embedded-linux: |
+    参考回答：软件侧说明设备树 `phy-mode`、MDIO 节点、PHY ID、时钟和 reset GPIO 如何匹配；用 `ethtool` 查看协商和统计，用内核 PHY 文档/驱动确认 delay 模式。型号和驱动要在实际板上用 `phy_id`、日志和寄存器读回闭环确认。

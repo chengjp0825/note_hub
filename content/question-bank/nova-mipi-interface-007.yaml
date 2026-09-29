@@ -1,0 +1,13 @@
+id: nova-mipi-interface-007
+question: 项目中的 MIPI 接口连接了哪些器件？接口用途和链路配置是什么？
+roles: [hardware, embedded-linux, fpga]
+companies: [诺瓦星云]
+topic: 高速接口与 FPGA
+tags: [MIPI]
+answers:
+  hardware: |
+    参考回答：项目中的 MIPI 连接对象必须从原理图/BOM 和设备树核对，常见是 CSI-2 摄像头或 DSI-2 显示屏；回答应给出方向、lane 数、lane rate、分辨率/刷新率、供电、时钟和连接器。硬件验证包括差分阻抗、长度/skew、AC/DC 耦合（按器件要求）、ESD 负载和 D-PHY HS/LP 波形；协议与速率以 MIPI/SoC/面板 datasheet 为准。
+  embedded-linux: |
+    参考回答：Linux 侧说明 CSI/DSI endpoint、media graph、设备树 lane mapping、面板/摄像头 mode 和时序；用 DRM/V4L2 日志、PHY 错误、帧计数和抓帧确认链路。项目具体器件和速率不能凭题目臆测。
+  fpga: |
+    参考回答：若 MIPI 接入 FPGA，应说明使用的 D-PHY/CSI-2/DSI IP、lane 对齐、字节解包、时钟域跨越和缓存策略，并用协议分析仪/仿真帧/误码计数验证。

@@ -1,0 +1,36 @@
+company: 新凯来
+role: 半导体设备 MCU 嵌入式
+year: null
+round: [一面, 二面]
+platform: 抖音
+url: null
+author: 抖音 UP 主
+source_type: 平台 UP 主整理
+transcription: 逐字整理
+questions:
+  - { raw_question: 半导体设备里面子控制板 MCU 和上位机是怎么配合，有没有做过类似板子？, classification: GENERALIZABLE, question_bank_id: xinkailai-mcu-round1-architecture-013 }
+  - { raw_question: const 全局常量和宏定义的区别，编译之后存储位置、是否占用 RAM。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-const-macro-014 }
+  - { raw_question: 中断里面能不能用延时，忙等待延时和 SysTick 延时的本质差异。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-interrupt-delay-015 }
+  - { raw_question: IO 驱动继电器，软硬件如何保证上电不会误吸合。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-relay-safe-boot-016 }
+  - { raw_question: ADC 采样数据跳动大，硬件和软件滤波如何选型，中值、均值、滑动平均、一阶滞后分别适配什么信号。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-adc-filter-017 }
+  - { raw_question: RS485 和 TTL 串口差异、Modbus-RTU、485 收发方向切换时机，切早切晚会出现什么现象。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-rs485-modbus-018 }
+  - { raw_question: 多个节点同时发送时 CAN 的仲裁机制。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-can-arbitration-019 }
+  - { raw_question: EtherCAT 的基础概念，对比普通以太网，DC 分布式时钟解决什么问题。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-ethercat-dc-020 }
+  - { raw_question: 步进电机与伺服电机区别，设备场景该如何选型。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-motor-selection-021 }
+  - { raw_question: 热电偶和 PT100 原理，热电偶为什么需要做冷端补偿。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-temperature-sensor-022 }
+  - { raw_question: 设备现场偶发死机，没有仿真器的情况下怎么定位问题。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-freeze-debug-023 }
+  - { raw_question: 串口字节流遇到半包、粘包、校验错误该如何处理。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-serial-framing-024 }
+  - { raw_question: 一次遍历找出数组第二大的数，需要处理最大值重复的边界情况。, classification: GENERAL, question_bank_id: xinkailai-mcu-round1-second-largest-025 }
+  - { raw_question: FreeRTOS 中断和任务之间传递数据，信号量、任务通知、队列分别该怎么选。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-freertos-sync-001 }
+  - { raw_question: 队列满的三种处理策略：阻塞等待、覆盖最旧、丢弃最新，各自适用场景。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-queue-full-002 }
+  - { raw_question: 软件定时器，对比硬件定时器，以及软件定时器回调里面有哪些禁忌。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-software-timer-003 }
+  - { raw_question: SPI 挂多个从设备偶发通信失败，该怎么一步步排查。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-spi-multi-slave-004 }
+  - { raw_question: I2C 出现 SDA 被从机拉死的死锁，如何做总线恢复。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-i2c-bus-recovery-005 }
+  - { raw_question: Flash 存放运行日志，环形日志该怎么设计。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-flash-ring-log-006 }
+  - { raw_question: 软件依靠哪些机制实现设备 7×24 高可用。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-reliability-007 }
+  - { raw_question: 双 MCU 之间用 SPI 做高速通信，自定义协议怎么设计，包含帧格式、同步、流控。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-dual-mcu-spi-protocol-008 }
+  - { raw_question: 要做到 ±0.5℃ 控温精度，抛开 PID 参数调参，采样端与执行端还能做哪些优化。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-temperature-control-009 }
+  - { raw_question: 0-10V 电压信号和 4-20mA 电流信号 MCU 如何对接，电流环抗干扰优势。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-industrial-analog-010 }
+  - { raw_question: Modbus 主机轮询 20 个从站，如果其中一个从站掉线，如何避免把整条总线拖垮。, classification: GENERAL, question_bank_id: xinkailai-mcu-round2-modbus-timeout-011 }
+  - { raw_question: 硬件同事判定是软件 bug，但你怀疑是硬件问题，出现分歧该怎么协同定位。, classification: BEHAVIORAL, question_bank_id: xinkailai-mcu-round2-hw-sw-collaboration-012 }
+

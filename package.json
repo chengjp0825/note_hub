@@ -5,8 +5,11 @@
   "description": "architecture and datasheet notes",
   "main": "index.js",
   "scripts": {
+    "predev": "npm run build:question-bank",
+    "prebuild": "npm run build:question-bank",
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
+    "build:question-bank": "node scripts/build-question-bank.mjs",
     "check:staged-doc-links": "node scripts/check-staged-doc-links.mjs",
     "check:deadlinks": "vitepress build docs",
     "preview": "vitepress preview docs",
@@ -16,9 +19,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tanstack/vue-virtual": "^3.13.39",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.1",
-    "markdown-it-mathjax3": "^4.3.2"
+    "markdown-it-mathjax3": "^4.3.2",
+    "minisearch": "^7.2.0",
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "husky": "^9.1.7",

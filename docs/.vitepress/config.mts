@@ -60,6 +60,7 @@ export default {
     nav: [
       { text: '首页', link: '/' },
       { text: '那我问你', link: '/interview-questions/' },
+      { text: '岗位题库', link: '/question-bank/' },
       { text: '你知道吗', link: '/should-know/' },
       { text: '微控制器', link: '/microcontrollers/' },
       { text: 'FPGA', link: '/fpga/' },
@@ -69,6 +70,49 @@ export default {
 
     // 4. 侧边栏配置
     sidebar: {
+      '/question-bank/': [
+        {
+          text: '岗位题库',
+          items: [
+            { text: '全部题目', link: '/question-bank/' },
+            { text: '题库使用指南', link: '/question-bank/guide' },
+            { text: '面试准备', link: '/question-bank/interview-preparation' },
+          ],
+        },
+        {
+          text: '按岗位',
+          collapsed: false,
+          items: [
+            { text: '岗位介绍', link: '/question-bank/roles' },
+            { text: '硬件工程师', link: '/question-bank/?role=hardware#filters-role' },
+            { text: 'FPGA 工程师', link: '/question-bank/?role=fpga#filters-role' },
+            { text: '嵌入式 MCU', link: '/question-bank/?role=embedded-mcu#filters-role' },
+            { text: '嵌入式 Linux', link: '/question-bank/?role=embedded-linux#filters-role' },
+          ],
+        },
+        {
+          text: '按专题',
+          collapsed: false,
+          items: [
+            { text: '电源与硬件设计', link: '/question-bank/?topic=电源与硬件设计#filters-topic' },
+            { text: '高速接口与 FPGA', link: '/question-bank/?topic=高速接口与 FPGA#filters-topic' },
+            { text: 'MCU 与嵌入式软件', link: '/question-bank/?topic=MCU 与嵌入式软件#filters-topic' },
+            { text: '通信与网络', link: '/question-bank/?topic=通信与网络#filters-topic' },
+            { text: '采集与控制', link: '/question-bank/?topic=采集与控制#filters-topic' },
+            { text: '测试与系统工程', link: '/question-bank/?topic=测试与系统工程#filters-topic' },
+          ],
+        },
+        {
+          text: '按公司',
+          collapsed: true,
+          items: [
+            { text: '公司介绍', link: '/question-bank/companies' },
+            { text: '全志科技', link: '/question-bank/?company=全志科技#filters-company' },
+            { text: '诺瓦星云', link: '/question-bank/?company=诺瓦星云#filters-company' },
+            { text: '新凯来', link: '/question-bank/?company=新凯来#filters-company' },
+          ],
+        },
+      ],
       '/contributing/': [
         {
           text: '投稿规范',
@@ -78,6 +122,7 @@ export default {
             { text: '模板文件', link: '/TEMPLATE' },
             { text: '排版与组件', link: '/contributing/formatting' },
             { text: '内容结构', link: '/contributing/structure' },
+            { text: '题库采集规范', link: '/contributing/question-bank-workflow' },
             { text: 'GitHub 新手教程', link: '/contributing/github-guide' },
             { text: '常见问题', link: '/contributing/faq' },
           ],

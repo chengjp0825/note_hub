@@ -1,0 +1,11 @@
+id: nova-low-voltage-ripple-017
+question: 3.3V 以下电源轨是否统一按 30mV 控制？ZYNQ-7045 等特殊电源轨实际能否达到 10mV 以内？
+roles: [hardware, fpga]
+companies: [诺瓦星云]
+topic: 电源与硬件设计
+tags: [电源设计, ZYNQ]
+answers:
+  hardware: |
+    参考回答：不能把“3.3V 以下统一 30mV”当成通用规范；每条轨的允许纹波应由 SoC/FPGA/DDR/PLL/模拟器件 datasheet、负载瞬态、PSRR 和系统噪声预算共同确定。Zynq-7045 的核心、辅助、BRAM、MIO/DDR 等电源域有不同额定值和敏感度，10mV 只有在带宽、负载和测量方法明确且电源方案能实现时才有意义。用低环路探头在负载端测量，并区分开关基波、尖峰和宽带噪声；对照规格而不是追求一个孤立数字。
+  fpga: |
+    参考回答：FPGA 侧按器件 power rail 表和时钟/GT/DDR 约束建立噪声预算，确认每路由哪一级 regulator 供电、去耦网络和上电时序；再结合 Vivado/XPE 的电流估算、最坏切换活动和实测纹波验证。不同速度级、封装和温度等级可能有不同限制。

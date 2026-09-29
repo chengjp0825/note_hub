@@ -1,0 +1,65 @@
+company: 全志科技
+role: 硬件工程师
+year: null
+round: 一面
+platform: 抖音
+url: null
+author: 抖音 UP 主
+source_type: 平台 UP 主整理
+transcription: 逐字整理
+questions:
+  - raw_question: 如何提高 LDO 的效率？
+    classification: GENERAL
+    question_bank_id: allwinner-ldo-efficiency-001
+  - raw_question: 你们选用过的一颗 LDO 型号是什么？可以讲一下吗？用过的一颗小封装 LDO 型号有印象吗？哪些指标高限制了它应用不太广泛？
+    classification: GENERALIZABLE
+    question_bank_id: allwinner-ldo-selection-014
+  - raw_question: DC-DC 的效率，从板级来看，有哪些可以提高效率的维度？
+    classification: GENERAL
+    question_bank_id: allwinner-dcdc-efficiency-002
+  - raw_question: 电感选型对效率有什么要关注的点？
+    classification: GENERAL
+    question_bank_id: allwinner-dcdc-efficiency-002
+  - raw_question: 你用过的一颗 DC-DC 型号可以讲一下吗？它的 DC-DC 最高效率是多少？
+    classification: GENERALIZABLE
+    question_bank_id: allwinner-dcdc-model-015
+  - raw_question: 我们要查找一颗 DC-DC 芯片的效率，会去哪里查？怎么查？还有比 Datasheet 更官方的文档吗？有查过吗？是工具准确，还是 Datasheet 准确？
+    classification: GENERAL
+    question_bank_id: allwinner-datasheet-source-016
+  - raw_question: TPS54331 最大输出电流是多少？还有印象吗？峰值的呢？
+    classification: GENERAL
+    question_bank_id: allwinner-tps54331-017
+  - raw_question: MOSFET 经常有用吗？P-MOS 管的导通条件是什么？关注哪几个参数？
+    classification: GENERAL
+    question_bank_id: allwinner-mosfet-003
+  - raw_question: USB 3.0 的速率是多少？2.0 呢，除了 480MB 还有啥？
+    classification: GENERAL
+    question_bank_id: allwinner-usb3-004
+  - raw_question: MIPI 有真正接触过吗？有实测过吗？MIPI 接口的差分幅值大概是什么范围？0～1.2V 吗？差分信号还有 1.2V 这么高的电压吗？是查资料还是自己测过？
+    classification: GENERALIZABLE
+    question_bank_id: allwinner-mipi-signal-005
+  - raw_question: MIPI 接口接屏幕，实际跑的速率大概是什么范围？
+    classification: GENERAL
+    question_bank_id: allwinner-mipi-rate-006
+  - raw_question: 内存 LPDDR4X 哪几路供电？电压分别是多少？可以讲一下在 DDR 硬件设计上了解的点吗？DDR 的 CLK 阻抗值是多少？Data 的阻抗是多少？单端 Data 阻抗往小了调，会有什么问题？
+    classification: GENERAL
+    question_bank_id: allwinner-lpddr4x-ddr-007
+  - raw_question: 讲一讲这两个项目里面遇到的最难的一个硬件问题，怎么解的？后面有没有去做排查，到底是哪一块、哪个方向的问题？
+    classification: PROJECT
+    question_bank_id: allwinner-project-problem-008
+  - raw_question: 千兆网口吞吐量这块，不管有没有回板，大概先去判断是哪一个方向的问题？
+    classification: GENERALIZABLE
+    question_bank_id: allwinner-ethernet-throughput-009
+  - raw_question: 还测试过这个板子的电源时序和纹波是吧？印象中哪一路的纹波记得比较清楚吗？测的时候用的是什么探头去测？
+    classification: GENERALIZABLE
+    question_bank_id: allwinner-power-sequence-010
+  - raw_question: 焊接水平怎么样？
+    classification: GENERALIZABLE
+    question_bank_id: allwinner-soldering-011
+  - raw_question: 这个板子除了网口，还有什么其他现象或故障吗？
+    classification: GENERALIZABLE
+    question_bank_id: allwinner-board-fault-012
+  - raw_question: USB 3.0 认到之后，会不会用着用着断连？
+    classification: GENERALIZABLE
+    question_bank_id: allwinner-usb-disconnect-013
+

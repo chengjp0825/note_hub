@@ -1,0 +1,11 @@
+id: nova-clock-jitter-018
+question: 时钟信号如何设计与测试？如何测量时钟抖动？
+roles: [hardware, fpga]
+companies: [诺瓦星云]
+topic: 高速接口与 FPGA
+tags: [时钟与时序]
+answers:
+  hardware: |
+    参考回答：时钟设计先明确频率、抖动预算、相噪、占空比、摆幅、终端和供电要求，再决定晶振/PLL/时钟树、参考平面和隔离方式。测试要用低噪声时钟源和合适带宽的有源差分探头，测周期抖动、TIE、RMS/峰峰值、相噪和占空比，并注明带宽、采样率、触发和仪器本底。抖动是否合格必须与接收器 datasheet 或协议预算比较，不能只看示波器默认的一个“jitter”数字。
+  fpga: |
+    参考回答：FPGA 侧区分输入参考时钟、PLL/MMCM 输出和 GT reference clock，分别检查时钟约束、时钟专用引脚、BUFG/全局时钟资源和 CDC。用 Vivado report_clock_networks/report_timing 验证约束，再将板级测量与器件时钟规格、GT 抖动预算对应起来。

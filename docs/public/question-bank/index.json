@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "id": "dcdc-loop-002",
+      "question": "Buck DCDC 的反馈环路为什么容易振荡？如何快速定位？",
+      "roles": [
+        "embedded-mcu",
+        "hardware"
+      ],
+      "companies": [
+        "全志科技"
+      ],
+      "tags": [
+        "电源完整性",
+        "环路补偿",
+        "DCDC"
+      ],
+      "answerViews": [
+        "embedded-mcu",
+        "hardware"
+      ],
+      "shard": 62
+    },
+    {
+      "id": "interrupt-latency-004",
+      "question": "MCU 中断响应偶发过慢，如何系统分析？",
+      "roles": [
+        "embedded-mcu"
+      ],
+      "companies": [
+        "全志科技"
+      ],
+      "tags": [
+        "实时性",
+        "中断",
+        "FreeRTOS",
+        "MCU"
+      ],
+      "answerViews": [
+        "embedded-mcu"
+      ],
+      "shard": 15
+    },
+    {
+      "id": "mipi-debug-003",
+      "question": "MIPI CSI 图像偶发花屏，排查顺序应该是什么？",
+      "roles": [
+        "embedded-linux",
+        "fpga",
+        "hardware"
+      ],
+      "companies": [
+        "诺瓦星云"
+      ],
+      "tags": [
+        "调试",
+        "高速信号",
+        "CSI",
+        "MIPI"
+      ],
+      "answerViews": [
+        "embedded-linux",
+        "fpga",
+        "hardware"
+      ],
+      "shard": 41
+    },
+    {
+      "id": "rgmii-length-001",
+      "question": "RGMII 接口为什么需要等长？允许误差应该如何判断？",
+      "roles": [
+        "embedded-linux",
+        "fpga",
+        "hardware"
+      ],
+      "companies": [
+        "诺瓦星云",
+        "全志科技"
+      ],
+      "tags": [
+        "时序",
+        "DDR",
+        "PCB",
+        "RGMII"
+      ],
+      "answerViews": [
+        "embedded-linux",
+        "fpga",
+        "hardware"
+      ],
+      "shard": 38
+    }
+  ]
+}

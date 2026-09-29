@@ -1,0 +1,14 @@
+id: xinkailai-mcu-round2-i2c-bus-recovery-005
+question: >-
+  I2C 出现 SDA 被从机拉低导致的总线死锁，应该如何进行总线恢复？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: 通信与网络
+tags: [板级总线, 通信协议]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 先停止控制器并把 SCL/SDA 切换为开漏 GPIO，确认上拉、电平和是否有设备持续占线。
+    - 按规范手动产生最多 9 个 SCL 脉冲，给被中断的从机移出残留字节；SDA 释放后再产生 STOP。
+    - 重新初始化 I2C 外设并验证总线空闲。仍无法释放时，通过从机复位、负载开关或硬件看门狗恢复。
+    - 记录锁死设备、持续时间和恢复次数，避免静默掩盖硬件问题。

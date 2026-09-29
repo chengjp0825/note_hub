@@ -1,0 +1,13 @@
+id: xinkailai-mcu-round1-interrupt-delay-015
+question: >-
+  中断服务函数里能不能使用延时？忙等待延时和 SysTick 延时的本质差异是什么？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: MCU 与嵌入式软件
+tags: [中断与定时器, C 语言, MCU]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 中断里应尽快退出，不能使用依赖任务调度的阻塞延时，也不应长时间忙等待。
+    - 忙等待会占用 CPU，时间受时钟、优化和中断打断影响；SysTick 通常提供系统节拍，任务延时可让出 CPU，但不等于硬实时定时。
+    - 中断只记录时间戳、置位事件或发送 FromISR 通知，把延时和业务处理放到任务或硬件定时器中。

@@ -1,0 +1,11 @@
+id: nova-zynq-power-013
+question: ZYNQ-7045 平台的电源设计是否涉及这些 DCDC 规格？如何分配各电源轨？
+roles: [hardware, fpga]
+companies: [诺瓦星云]
+topic: 电源与硬件设计
+tags: [电源设计, DCDC, ZYNQ]
+answers:
+  hardware: |
+    参考回答：Zynq-7045 的电源轨必须按具体器件数据手册和速度级核对，典型会区分 VCCINT/VCCBRAM、VCCAUX、VCCO、VCCPAUX/VCCPINT、PLL、DDR 和 GT 相关电源；不能只按“几路 DCDC”粗略回答。电源树应把每路的电压、最大/动态电流、上电顺序、PG/复位、纹波和去耦列成表，按 XPE/Vivado 估算和最坏温升选择 DCDC/LDO，再用示波器验证时序、纹波和负载阶跃。未使用的电源域、MIO/DDR 电压和 GT 供电也要按器件指南处理。
+  fpga: |
+    参考回答：FPGA 侧补充 PL/PS/DDR/GT 各域的资源活动率、时钟和收发器配置如何影响电流，并用 XPE/Vivado 报告回填电源预算；电源设计必须和器件封装、速度级、温度等级及启动时序一致。

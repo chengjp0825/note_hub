@@ -1,0 +1,14 @@
+id: xinkailai-mcu-round2-dual-mcu-spi-protocol-008
+question: >-
+  两个 MCU 之间使用 SPI 做高速通信时，自定义协议应该如何设计？需要包含哪些帧格式、同步和流控机制？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: 通信与网络
+tags: [板级总线, 通信协议, SPI]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 帧至少包含同步字、版本、类型、长度、序号、负载和 CRC，并规定大小端与转义规则。
+    - 用 GPIO 握手、固定帧头和超时完成同步，接收端按状态机处理半帧、错帧和重同步。
+    - 用 FIFO 水位、信用或 READY/IRQ 信号做流控，明确发送窗口、ACK、重传和重复包处理。
+    - 协议要定义复位后的初始握手、版本兼容、错误码和统计信息。

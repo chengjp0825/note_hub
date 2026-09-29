@@ -1,0 +1,13 @@
+id: nova-rk3568-zynq-application-001
+question: 设计的 RK3568 高速网关和 ZYNQ-7045 核心板分别面向什么应用场景？
+roles: [hardware, embedded-linux, fpga]
+companies: [诺瓦星云]
+topic: 测试与系统工程
+tags: [系统架构, ZYNQ]
+answers:
+  hardware: |
+    参考回答：RK3568 高速网关更适合通用 Linux、多媒体/网络协议栈、丰富外设和较高软件可扩展性的系统；Zynq-7045 核心板则把 ARM PS 与 FPGA PL 结合，适合确定性数据通路、并行处理、自定义高速接口和硬件加速。最终应用边界要以项目需求、IP、功耗、带宽、实时性和软件生态为准，不能只按芯片宣传语回答。面试时应说明各自的电源、内存、启动链路和关键接口取舍。
+  embedded-linux: |
+    参考回答：Linux 侧对比驱动/BSP、启动时间、内存和外设支持；说明哪些功能运行在 ARM/Linux，哪些由 FPGA 或专用 IP 卸载，并给出吞吐/延迟测量。
+  fpga: |
+    参考回答：FPGA 侧说明 Zynq PL 的逻辑、BRAM/DSP、AXI、DMA、时钟和收发器资源如何承担硬件加速或确定性链路，以及验证和升级方式。

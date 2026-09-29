@@ -1,0 +1,13 @@
+id: nova-pcie-sata-008
+question: PCIe 和 SATA 在板卡中分别用于什么功能？
+roles: [hardware, embedded-linux, fpga]
+companies: [诺瓦星云]
+topic: 高速接口与 FPGA
+tags: [高速串行接口, SATA]
+answers:
+  hardware: |
+    参考回答：PCIe 是点到点、分层和可枚举的高速互连，常用于 FPGA/网卡/加速器与主机或 SoC 之间的高带宽低延迟数据通道；SATA 是面向块存储设备的串行存储接口，常接 SSD/HDD。两者都用高速差分 SerDes，但协议、拓扑、训练、连接器和软件栈不同，不能互换。设计时分别核对 lane/代际速率、参考时钟、AC 耦合、回损/串扰、PERST#、CLKREQ#、热插拔和电源时序，并用枚举、链路训练、fio/实际吞吐验证。
+  embedded-linux: |
+    参考回答：Linux 侧用 `lspci -vv`/`setpci` 查看 PCIe 链路宽度、速率、错误计数和 AER，用 `dmesg`/`nvme list`/`smartctl` 检查设备；SATA 则看控制器链路、ATA 错误和实际存储吞吐。不要把链路标称速率当成文件系统实际带宽。
+  fpga: |
+    参考回答：FPGA 侧应说明使用 PCIe Hard IP/软核、BAR/DMA、MSI/MSI-X 和链路训练；若 SATA 连接到 FPGA，要说明采用的 SATA PHY/协议 IP 及 OOB/ALIGN 等验证。具体用途以项目架构和工程文件为准。

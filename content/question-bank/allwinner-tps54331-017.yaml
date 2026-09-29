@@ -1,0 +1,10 @@
+id: allwinner-tps54331-017
+question: TPS54331 的最大输出电流是多少？峰值电流又该如何理解？
+roles: [hardware]
+companies: [全志科技]
+topic: 电源与硬件设计
+tags: [电源设计, 器件选型]
+answers:
+  hardware: |
+    参考回答：TPS54331 的额定最大连续输出电流为 3A，但实际可用电流受输入输出电压、开关频率、电感饱和/RMS 电流、散热和限流阈值限制。峰值电流不是“可以长期输出的电流”，而是电感瞬时峰值，近似为 `Ipk=Iout+ΔIL/2`，用于校核电感饱和、开关管和限流裕量。选型与验证要按 datasheet 的热降额、纹波和瞬态条件做最坏情况计算，再在样机上测温升和负载阶跃。
+    参考资料：[TI TPS54331 datasheet](https://www.ti.com/lit/ds/symlink/tps54331.pdf)。

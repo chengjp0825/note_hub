@@ -1,0 +1,14 @@
+id: xinkailai-mcu-round2-queue-full-002
+question: >-
+  当 FreeRTOS 队列满时，阻塞等待、覆盖最旧数据、丢弃最新数据三种策略分别适用于什么场景？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: MCU 与嵌入式软件
+tags: [FreeRTOS, 固件设计, MCU]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 阻塞等待适合每条消息都重要且生产者可以被背压的场景，但必须设置超时，不能无限卡死。
+    - 覆盖最旧适合只关心最新状态的遥测、温度或位置数据。
+    - 丢弃最新适合旧数据仍有价值、不能破坏已有处理顺序的事件队列，并应记录丢包计数。
+    - 选择策略要结合实时性、数据价值、内存容量和故障可观测性验证。

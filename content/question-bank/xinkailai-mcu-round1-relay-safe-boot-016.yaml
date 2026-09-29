@@ -1,0 +1,13 @@
+id: xinkailai-mcu-round1-relay-safe-boot-016
+question: >-
+  MCU 的 IO 驱动继电器时，软硬件如何保证上电不会误吸合？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: 采集与控制
+tags: [执行器]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 硬件上让默认电平对应安全态，使用合适的三极管/MOSFET 驱动、下拉/上拉、续流和隔离，控制复位期间不误导通。
+    - 软件上在启动早期先配置安全 GPIO，再初始化外设和业务状态；加入输出许可、联锁和故障降级。
+    - 验证 POR、复位、看门狗复位、掉电和 IO 浮空等边界，并用示波器观察上电波形。

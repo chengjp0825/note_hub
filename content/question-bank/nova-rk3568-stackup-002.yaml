@@ -1,0 +1,9 @@
+id: nova-rk3568-stackup-002
+question: RK3568 核心板的 10 层板如何设计？叠层、布局和布线有哪些考虑？
+roles: [hardware]
+companies: [诺瓦星云]
+topic: 电源与硬件设计
+tags: [PCB, 信号完整性]
+answers:
+  hardware: |
+    参考回答：10 层 RK3568 核心板叠层应先满足连续参考平面、电源完整性和高速布线资源，再决定信号层分配。DDR、RGMII、USB3、PCIe、MIPI 等高速线优先贴近完整地平面，控制层间距得到目标单端/差分阻抗；电源/地平面要低阻抗并避免高速线跨分割。布局上先放 SoC、DDR、PMIC、晶振和连接器，缩短关键回路，控制回流和串扰；最后做 SI/PI、热和 DFM 评审，用阻抗 coupon/实测验证。

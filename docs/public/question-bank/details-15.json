@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "questions": {
+    "interrupt-latency-004": {
+      "answers": {
+        "embedded-mcu": "测量而非猜测：用 GPIO 打点观察响应时间，检查中断优先级分组、临界区、关中断时长、ISR 内阻塞操作以及 Flash 等待周期。\n\n把耗时工作放到任务或 DMA 完成回调中。"
+      }
+    }
+  }
+}

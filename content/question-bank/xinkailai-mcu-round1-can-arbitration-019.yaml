@@ -1,0 +1,13 @@
+id: xinkailai-mcu-round1-can-arbitration-019
+question: >-
+  多个节点同时发送时，CAN 的仲裁机制是什么？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: 通信与网络
+tags: [工业总线, 通信协议]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - CAN 使用线与式非破坏性仲裁，显性位 0 覆盖隐性位 1；节点发送同时读取总线。
+    - 在仲裁字段中，标识符数值越小通常优先级越高，发送隐性位但读到显性位的节点立即退出，获胜帧无需重发。
+    - 设计 ID 时要控制优先级、周期和总线利用率，并防止低优先级报文长期饥饿。

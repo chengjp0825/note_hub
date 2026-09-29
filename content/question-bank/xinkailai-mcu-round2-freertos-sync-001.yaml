@@ -1,0 +1,15 @@
+id: xinkailai-mcu-round2-freertos-sync-001
+question: >-
+  FreeRTOS 中断和任务之间传递数据时，信号量、任务通知、队列分别应该怎么选？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: MCU 与嵌入式软件
+tags: [FreeRTOS, 中断与定时器, MCU]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 信号量用于同步事件或互斥，不承担业务数据传递；互斥锁还需要优先级继承。
+    - 任务通知适合单接收任务的轻量事件、计数或一个 32 位值，开销最低。
+    - 队列适合传递结构化数据、多个生产者/消费者和需要排队的消息，并明确长度、超时和溢出策略。
+    - 中断中只调用 FromISR API，并通过唤醒高优先级任务完成后续处理。
+    - 参考：[FreeRTOS 任务通知 API](https://www.freertos.org/Documentation/02-Kernel/04-API-references/05-Direct-to-task-notifications/04-xTaskNotify)。

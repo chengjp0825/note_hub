@@ -1,0 +1,9 @@
+id: allwinner-lpddr4x-ddr-007
+question: LPDDR4X 有哪几路供电、各电压是多少？DDR 硬件设计中 CLK 与 Data 阻抗如何设定，端接过小会有什么问题？
+roles: [hardware]
+companies: [全志科技]
+topic: 高速接口与 FPGA
+tags: [DDR, 时钟与时序]
+answers:
+  hardware: |
+    参考回答：LPDDR4X 的电源名称和电压必须以所用颗粒 datasheet 为准，常见会区分核心/IO/字节通道等电源，不能拿 LPDDR3 或另一厂商的数值套用。DDR 设计先按 SoC 与内存厂商给出的 stack-up、阻抗和拓扑约束建立约束文件，再用 TDR/阻抗 coupon 和 SI 仿真确认。CLK、DQS、DQ 的单端/差分阻抗、长度匹配、参考平面和过孔结构要按控制器规范执行；端接过小会造成过度负载、边沿变慢、眼图收缩和时序裕量下降，最终需在目标速率和温度范围做训练/眼图验证。

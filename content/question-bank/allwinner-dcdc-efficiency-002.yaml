@@ -1,0 +1,9 @@
+id: allwinner-dcdc-efficiency-002
+question: 从板级来看，DC-DC 效率有哪些可提升的维度？电感选型关注什么？
+roles: [hardware]
+companies: [全志科技]
+topic: 电源与硬件设计
+tags: [电源设计, 器件选型]
+answers:
+  hardware: |
+    参考回答：板级效率可从芯片工作点、开关频率、MOSFET/二极管损耗、电感 DCR、输入输出电容 ESR、PCB 铜损和轻载策略共同优化。电感先按纹波电流目标计算，再校核饱和电流、RMS 电流、DCR 和温升；不能只看标称电感值。布局上缩小高 di/dt 回路、保证 SW 节点短而远离敏感线，并按 datasheet 的补偿与散热建议验证。效率要在最大/典型/轻载和全输入范围实测，不能只引用典型曲线。

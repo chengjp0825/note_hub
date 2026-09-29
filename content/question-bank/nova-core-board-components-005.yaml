@@ -1,0 +1,11 @@
+id: nova-core-board-components-005
+question: 核心板主要集成了哪些器件？是否包括两颗 LPDDR4/4X、eMMC 8GB 等？
+roles: [hardware, embedded-linux]
+companies: [诺瓦星云]
+topic: 测试与系统工程
+tags: [系统架构]
+answers:
+  hardware: |
+    参考回答：这是项目事实题，不能脱离 BOM 直接断言“就是两颗 LPDDR4/4X、8GB eMMC”。应按原理图、BOM、丝印和装配版本逐项说明 SoC、内存颗粒、eMMC、PMIC、时钟、复位、网口/USB/PCIe/MIPI 等器件及其作用，并指出不同版本的差异。回答时重点讲电源域、启动链路、关键高速连接和器件选型依据；容量、颗粒数量和料号必须能在受控版本的 BOM/数据手册中复核。
+  embedded-linux: |
+    参考回答：从 Linux 启动视角补充 BootROM→SPL/TF-A→U-Boot→Kernel 的存储介质和分区关系，说明 DDR 初始化、eMMC 启动/量产和设备树节点如何对应实际器件。不要把内核识别到的容量当作唯一硬件证据。

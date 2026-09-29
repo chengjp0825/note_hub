@@ -1,0 +1,12 @@
+id: nova-sata-bandwidth-009
+question: SATA 工作在什么速率？理论带宽和实际传输速率大概是多少？
+roles: [hardware, embedded-linux]
+companies: [诺瓦星云]
+topic: 高速接口与 FPGA
+tags: [高速串行接口, SATA]
+answers:
+  hardware: |
+    参考回答：SATA Revision 3.0 的线速率为 6Gb/s（前代为 3Gb/s、1.5Gb/s）；由于 8b/10b 编码和协议开销，6Gb/s 的理论有效链路吞吐约 4.8Gb/s，约 600MB/s，实际文件传输还会受 SSD/HDD、队列、控制器、文件系统和散热影响。验证时分别看链路协商代际、协议层带宽和 fio/实际文件吞吐，不能把标称 6Gb/s 直接当作 6GB/s。
+    参考资料：[SATA-IO 规范资料](https://sata-io.org/developers/sata-specifications)。
+  embedded-linux: |
+    参考回答：Linux 侧用 `dmesg`、SATA 控制器信息、`smartctl` 和 `fio` 查看链路、错误计数和实际读写；固定块大小、队列深度和缓存后再比较。若协商降到 3Gb/s，先查线缆/信号/电源；若链路正常但吞吐低，再查设备和 I/O 栈。

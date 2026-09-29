@@ -1,0 +1,13 @@
+id: xinkailai-mcu-round1-rs485-modbus-018
+question: >-
+  RS485 和 TTL 串口有什么差异？在 Modbus-RTU 中，485 收发方向切换的时机是什么，切早或切晚会出现什么现象？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: 通信与网络
+tags: [工业总线, 通信协议, Modbus]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - TTL 是单端逻辑电平，距离短且共地；RS485 是差分、半双工、多点总线，抗共模干扰和传输距离更好。
+    - 发送时使能驱动器，必须等待 UART 的发送移位寄存器真正完成，再留出停止位时间后切回接收。
+    - 切早会截断末字节或 CRC，切晚会占线、影响对端响应；应结合 TXE/TC 标志、帧间隔和收发器延时验证。

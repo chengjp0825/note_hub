@@ -1,0 +1,9 @@
+id: allwinner-ldo-selection-014
+question: 选用过哪些 LDO 型号？小封装 LDO 的印象、参数限制与适用边界是什么？
+roles: [hardware]
+companies: [全志科技]
+topic: 电源与硬件设计
+tags: [电源设计, 器件选型]
+answers:
+  hardware: |
+    参考回答：回答具体型号时必须以项目 BOM 和 datasheet 为准。小封装 LDO 的优点是面积和寄生小，但受最大电流、热阻、输入输出电容、散热铜皮和封装引脚电流限制；“小封装”不等于不能带大电流，需按结温和降额计算。重点看 Vin/Vout、dropout@Iout、限流/短路保护、PSRR/噪声、静态电流、稳定性和可采购性，并在实际负载瞬态、温升和启动条件下验证。

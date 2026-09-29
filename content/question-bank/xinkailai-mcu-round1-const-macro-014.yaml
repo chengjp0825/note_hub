@@ -1,0 +1,13 @@
+id: xinkailai-mcu-round1-const-macro-014
+question: >-
+  C 语言中 const 全局常量和宏定义有什么区别？编译后存储在哪里，是否占用 RAM？
+roles: [embedded-mcu]
+companies: [新凯来]
+topic: MCU 与嵌入式软件
+tags: [C 语言]
+answers:
+  embedded-mcu: |-
+    ## 作答要点
+    - 宏在预处理阶段文本替换，没有类型和作用域语义；const 对象有类型、作用域和调试信息，编译器可检查访问。
+    - const 全局对象通常放入只读段，但具体位置取决于工具链、取地址方式和链接脚本；不要绝对化地说“永远不占 RAM”。
+    - 宏适合条件编译和常量表达式，常量对象适合类型安全、取地址和调试；宏参数还要注意副作用与括号。

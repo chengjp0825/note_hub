@@ -1,0 +1,11 @@
+id: allwinner-usb-disconnect-013
+question: USB 3.0 识别后会不会出现使用中断连？如何定位稳定性问题？
+roles: [hardware, embedded-linux]
+companies: [全志科技]
+topic: 通信与网络
+tags: [USB]
+answers:
+  hardware: |
+    参考回答：先区分“枚举失败、链路降速、传输超时、总线复位”四类现象，记录 dmesg、USB error counter 和发生时的电流/温度。硬件侧检查 5V 压降和限流、ESD/共模器件、SuperSpeed 差分阻抗与长度、参考时钟、连接器和地回路；用 USB 眼图/协议分析仪或已知良好线缆做 A/B。若只在高负载或热态断连，优先查供电、信号裕量和热；若换内核/设备才变化，再查驱动和电源管理。
+  embedded-linux: |
+    参考回答：用 `dmesg -w`、`lsusb -t`、usbmon 和控制器寄存器记录断连前后的 reset、timeout、link state；固定 autosuspend、速率和设备，分别测试 USB2/USB3、不同线缆和端口。将软件日志与电源示波器、差分波形时间对齐，才能区分 xHCI 驱动、设备固件、供电和 SuperSpeed SI。

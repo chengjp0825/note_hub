@@ -1,0 +1,12 @@
+id: allwinner-mipi-signal-005
+question: 是否真正接触和实测过 MIPI？MIPI 接口差分幅值大概处于什么范围，如何验证？
+roles: [hardware, embedded-linux]
+companies: [全志科技]
+topic: 高速接口与 FPGA
+tags: [MIPI, 高速串行接口]
+answers:
+  hardware: |
+    参考回答：MIPI D-PHY 的 HS 差分摆幅与共模取决于版本、速率、终端和器件实现，不能把某个旧版本的典型值当成所有项目的统一上限。应以 SoC、面板/摄像头和 MIPI 规范对应版本为准，用高带宽差分探头、合适的夹具和短接地弹簧测 HS/LP 电平、眼图、上升沿、共模和 lane skew；同时检查探头负载、带宽和接地方式。实测应覆盖启动、持续传输、温度和不同 lane 速率，并与 datasheet 限值逐项比对。
+    参考资料：[MIPI D-PHY 官方介绍](https://www.mipi.org/specifications/d-phy)。
+  embedded-linux: |
+    参考回答：软件侧先确认 CSI/DSI mode、lane 数、速率和时序参数，再看 PHY/控制器错误中断、帧计数、CRC/ECC 和 DRM/V4L2 日志。只有在配置正确后才进入示波器验证，避免把设备树或面板时序问题误判成电气问题。

@@ -1,0 +1,10 @@
+id: nova-probe-bandwidth-019
+question: 针对不同频率信号如何选择示波器探头带宽？例如 RGMII 125MHz 信号应选多大带宽的探头，带宽比例大概是多少？
+roles: [hardware]
+companies: [诺瓦星云]
+topic: 测试与系统工程
+tags: [测试测量]
+answers:
+  hardware: |
+    参考回答：探头带宽应按边沿而不是只按重复频率选择。数字信号可先用 `f_edge≈0.5/t_r` 估算有效边沿频率，再让示波器和探头带宽至少为其 3–5 倍，并校核探头输入电容、接地和负载。RGMII 的数据/时钟重复频率为 125MHz，但边沿可能对应数百 MHz 甚至更高的频谱，因此不能简单选 125MHz 探头；工程上常从 1GHz 以上带宽开始，再根据 SoC 输出边沿和测量目标确认。用短接地弹簧、差分探头和带宽限制对照测量，避免探头本身改变波形。
+    参考资料：[Keysight 数字信号探头带宽说明](https://www.keysight.com/us/en/assets/7018-01247/application-notes/5989-5733.pdf)。

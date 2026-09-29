@@ -1,0 +1,9 @@
+id: allwinner-power-sequence-010
+question: 如何测试板子的电源时序和纹波？哪一路纹波最需要关注，测试时使用什么探头？
+roles: [hardware]
+companies: [全志科技]
+topic: 测试与系统工程
+tags: [测试测量]
+answers:
+  hardware: |
+    参考回答：用示波器同时观察各电源轨、PG/RESET 和关键时钟，按芯片 datasheet 定义的触发点测上升时间、先后顺序、过冲/下冲和稳定时间；电源纹波应在负载端、用短地弹簧或同轴探头测量。最需要关注的是对启动敏感的核心、DDR、PLL/模拟和高速 SerDes 供电，而不是笼统地给所有轨套 30mV。探头带宽限制、接地环路和示波器带宽会显著影响结果，要记录带宽限制和负载工况。

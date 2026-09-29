@@ -1,0 +1,9 @@
+id: allwinner-mosfet-003
+question: MOSFET 常用于什么场景？P-MOS 管导通条件是什么，应关注哪些参数？
+roles: [hardware]
+companies: [全志科技]
+topic: 电源与硬件设计
+tags: [电源设计, 器件选型]
+answers:
+  hardware: |
+    参考回答：MOSFET 常用于 Buck 开关、负载开关、反接保护、理想二极管和电机驱动。P-MOS 高边导通条件是 `VGS` 低于其负阈值（源极为高电位时栅极需被拉低），关断时栅极回到源极电位；实际不能只看阈值电压。选型要看 VDS、连续/脉冲 ID、RDS(on)@实际 VGS、栅极电荷、体二极管、SOA、封装热阻和雪崩能力，并校核启动浪涌、短路和散热。

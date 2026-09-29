@@ -1,0 +1,9 @@
+id: nova-ripple-spec-016
+question: 纹波是否所有电压都要求控制在 30mV 以内？不同电压轨的要求如何确定？
+roles: [hardware]
+companies: [诺瓦星云]
+topic: 电源与硬件设计
+tags: [电源设计]
+answers:
+  hardware: |
+    参考回答：不同电压轨的纹波指标应来自负载 datasheet、PSRR/噪声预算、时钟/ADC/DDR/SerDes 敏感度和负载瞬态，而不是所有轨统一 30mV。先区分低频控制环纹波、开关基波/谐波、尖峰和宽带噪声，明确测量带宽与位置；再按允许值反推电感、电容、补偿、去耦和布局。核心/PLL/模拟轨通常更敏感，普通 I/O 轨可按其器件容限放宽；最终在最坏 Vin、负载、温度和探头条件下验证。
