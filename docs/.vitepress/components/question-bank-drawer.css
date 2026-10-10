@@ -1,5 +1,15 @@
+.VPDoc:has(.bank) .VPDocFooter {
+  width: calc(100% - 262px);
+}
+
 .VPDoc:has(.bank) .prev-next {
-  display: none !important;
+  display: grid !important;
+}
+
+@media (max-width: 1100px) {
+  .VPDoc:has(.bank) .VPDocFooter {
+    width: 100%;
+  }
 }
 
 .mask > aside[role="dialog"] {
@@ -150,16 +160,6 @@
   color: var(--vp-c-brand-1);
 }
 
-.source-card footer::after {
-  content: "原始链接暂未收录";
-  flex: 0 0 auto;
-  color: var(--vp-c-text-3);
-}
-
-.source-card footer:has(a)::after {
-  display: none;
-}
-
 .recall-section {
   padding: 28px !important;
   background: color-mix(in srgb, var(--vp-c-brand-1) 3%, var(--vp-c-bg));
@@ -239,10 +239,6 @@
   .source-card header,
   .source-card footer {
     display: grid;
-  }
-
-  .source-card footer::after {
-    margin-top: 4px;
   }
 
   .source-section,

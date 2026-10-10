@@ -1,0 +1,20 @@
+id: huarui-hardware-round2-fpga-resource-selection-013
+question: FPGA 选型与资源评估需要关注哪些资源和约束？如何在不同器件之间权衡？
+roles: [hardware, fpga]
+companies: [华睿科技]
+topic: 高速接口与 FPGA
+tags: [FPGA]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 先从算法规模、时钟频率、数据带宽、接口数量、功耗、封装、温度和供货周期建立器件边界。
+    - 资源评估至少包括 LUT、FF、BRAM、DSP、PLL、IO、GT 或其他高速收发器，以及硬核处理器和 PCIe 等硬核 IP。
+    - 资源余量要覆盖综合实现变化、时序收敛、软件升级和生产偏差，不能按当前工程刚好装下作为选型结论。
+    - 最终用器件数据手册、工具估算、综合实现报告和目标板压力测试交叉确认性能、热和电源预算。
+    - 参考：[AMD 7 Series FPGA Product Selection](https://www.amd.com/en/products/adaptive-socs-and-fpgas/fpga/7-series.html)。
+  fpga: |-
+    ## 作答要点
+    - LUT 和 FF 反映逻辑与流水线容量，BRAM 和 DSP 反映存储与乘加密集型算法能力，PLL、IO 和 GT 决定时钟、引脚和高速链路边界。
+    - GT 数量与线速率、参考时钟、协议 IP 和通道损耗需要一起评估，不能只比较逻辑资源百分比。
+    - 用综合、布局布线、时序和功耗报告验证资源利用率、拥塞、时钟裕量和收发器配置，保留足够余量。
+    - 参考：[AMD Vivado Design Analysis](https://docs.amd.com/r/en-US/ug906-vivado-design-analysis)。

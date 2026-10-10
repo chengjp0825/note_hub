@@ -1,0 +1,26 @@
+id: huarui-hardware-round2-pcie-link-debug-008
+question: PCIe 链路协商速率或宽度不符合预期时，应该检查哪些条件？
+roles: [hardware, embedded-linux, fpga]
+companies: [华睿科技]
+topic: 高速接口与 FPGA
+tags: [高速串行接口, 时钟与时序]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 先确认端点和 Root Complex 支持的代际、lane 数、参考时钟架构、复位时序和供电条件。
+    - 检查差分阻抗、AC 耦合电容位置、走线损耗、回损、串扰、连接器和 lane 极性或交换是否符合器件要求。
+    - 通过链路训练状态、LTSSM、错误计数和降速后的稳定性判断是信号质量、时钟、复位还是协议配置问题。
+    - BAR 和 DMA 属于资源与数据通路配置，不能用它们替代链路层验证；修复后要测试枚举、读写、吞吐和长时间压力。
+    - 参考：[Linux PCI Bus Support](https://docs.kernel.org/PCI/pci.html)。
+  embedded-linux: |-
+    ## 作答要点
+    - 使用 lspci -vv、dmesg 和 AER 统计确认协商到的速率、宽度、训练状态和错误类型。
+    - 对比不同代际或不同 lane 配置，结合 setpci、设备树和驱动日志判断是硬件链路还是软件配置。
+    - DMA 验证需要检查地址映射、缓存一致性、中断和实际吞吐，不能只看设备已经完成枚举。
+    - 参考：[Linux PCI Error Recovery](https://docs.kernel.org/PCI/pcieaer-howto.html)。
+  fpga: |-
+    ## 作答要点
+    - FPGA 侧确认 PCIe Hard IP 或软核的代际、lane 配置、参考时钟、复位和 PIPE 状态机参数。
+    - 通过 LTSSM、链路状态寄存器、BAR 配置和 DMA 描述符逐层验证，区分链路训练和用户逻辑问题。
+    - 设计中应预留误码、性能和压力测试路径，并在目标速率下验证时序和收发器约束。
+    - 参考：[AMD Versal Adaptive SoC PCI Express](https://docs.amd.com/r/en-US/am012-versal-architecture/PCI-Express)。

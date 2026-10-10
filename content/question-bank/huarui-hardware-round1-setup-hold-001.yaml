@@ -1,0 +1,20 @@
+id: huarui-hardware-round1-setup-hold-001
+question: 建立时间和保持时间分别是什么？如何在时序分析中判断是否满足？
+roles: [hardware, fpga]
+companies: [华睿科技]
+topic: 高速接口与 FPGA
+tags: [时钟与时序]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 建立时间是数据在有效时钟边沿到来前必须保持稳定的最短时间，保持时间是该边沿之后仍需保持稳定的最短时间。
+    - 发送端延迟、接收端时钟偏斜、数据路径延迟、抖动和器件工艺温度电压都会改变时序裕量。
+    - 设计时应依据器件数据手册和接口约束计算最坏条件，并避免只用典型参数判断。
+    - 验证时结合静态时序分析、示波器或逻辑分析仪测量，检查 setup slack、hold slack 以及实际时钟和数据波形。
+    - 参考：[AMD Vivado Design Analysis](https://docs.amd.com/r/en-US/ug906-vivado-design-analysis)。
+  fpga: |-
+    ## 作答要点
+    - FPGA 中需要通过时钟约束、输入输出延迟约束和正确的时钟域关系，让工具计算数据到达时间与采样窗口。
+    - 建立时间违例通常需要降低数据路径延迟、调整时钟相位或降低频率，保持时间违例还要检查过短路径和时钟偏斜。
+    - 约束完成后查看每个时钟组的最差 slack，并在实现后的时序报告中覆盖不同速度级与温度电压条件。
+    - 参考：[AMD Vivado Design Constraints](https://docs.amd.com/r/en-US/ug903-vivado-using-constraints)。

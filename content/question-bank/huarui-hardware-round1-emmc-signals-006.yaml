@@ -1,0 +1,20 @@
+id: huarui-hardware-round1-emmc-signals-006
+question: eMMC 主要有哪些信号线？各信号在启动和数据传输中承担什么作用？
+roles: [hardware, embedded-linux]
+companies: [华睿科技]
+topic: 测试与系统工程
+tags: [系统架构]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 常见信号包括时钟 CLK、命令 CMD、数据 DAT0 到 DAT7，以及供电、地和按器件要求配置的复位信号。
+    - CLK 由主控提供，CMD 用于命令和响应，DAT 用于双向数据；总线宽度和速率由主控、颗粒和工作模式共同决定。
+    - 走线需要按 eMMC 和主控数据手册处理阻抗、长度匹配、参考平面、上拉、供电去耦和复位时序。
+    - 设计评审应核对启动电压、IO 电压、封装焊盘、引脚复用和量产测试点，避免把不同代际或不同电压规格直接套用。
+    - 参考：[JEDEC Flash 标准资料](https://www.jedec.org/standards-documents/focus/flash)。
+  embedded-linux: |-
+    ## 作答要点
+    - Linux 启动链路需要确认 BootROM、引导程序、分区表和内核 mmc 节点使用的是同一颗 eMMC 及正确总线宽度。
+    - 通过 dmesg、mmc extcsd read 和分区工具核对容量、速度模式、寿命信息与错误状态。
+    - 出现启动失败或文件系统错误时，应同时检查电源、时钟、信号质量、设备树 bus-width 和 eMMC 本体，避免只修改软件参数。
+    - 参考：[Linux MMC 子系统文档](https://docs.kernel.org/driver-api/mmc/mmc-dev-attrs.html)。

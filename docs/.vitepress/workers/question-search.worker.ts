@@ -19,8 +19,12 @@ self.onmessage = (event: MessageEvent) => {
     const company: string | null = event.data.company || null
     const tag: string | null = event.data.tag || null
     const topic: string | null = event.data.topic || null
-    const ids = query ? new Set(search.search(query, { prefix: true, fuzzy: 0.15 }).map((result) => result.id)) : null
-    const results = questions.filter((item) => (!ids || ids.has(item.id)) && (!roles.length || roles.some((role) => item.roles.includes(role))) && (!company || item.companies.includes(company)) && (!tag || item.tags.includes(tag)) && (!topic || item.topic === topic)).map((item) => item.id)
+    const matches = query ? search.search(query, { prefix: true, fuzzy: 0.15 }) : []
+    const rank = new Map(matches.map((result, index) => [result.id, index]))
+    const results = questions
+      .filter((item) => (!query || rank.has(item.id)) && (!roles.length || roles.some((role) => item.roles.includes(role))) && (!company || item.companies.includes(company)) && (!tag || item.tags.includes(tag)) && (!topic || item.topic === topic))
+      .sort((a, b) => query ? (rank.get(a.id) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.id) ?? Number.MAX_SAFE_INTEGER) : 0)
+      .map((item) => item.id)
     self.postMessage({ type: 'results', requestId: event.data.requestId, ids: results })
   }
 }

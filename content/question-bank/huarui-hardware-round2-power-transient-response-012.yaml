@@ -1,0 +1,14 @@
+id: huarui-hardware-round2-power-transient-response-012
+question: 电源出现过冲、下冲、恢复慢或振铃时，应该如何分析和处理？
+roles: [hardware]
+companies: [华睿科技]
+topic: 电源与硬件设计
+tags: [电源设计, 模拟电路]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 先确认测量方法没有引入探头接地环路或带宽误判，再固定输入电压、负载阶跃、温度和触发条件。
+    - 过冲、下冲和恢复慢通常与环路带宽、补偿、输出电容、ESR、电感饱和、限流或负载变化有关，应按控制器推荐方法逐项排查。
+    - 振铃还要检查开关节点寄生参数、回路面积、阻尼、布局和探头连接，必要时通过 RC 阻尼、布局优化或参数调整降低尖峰。
+    - 修改后必须重新验证启动、关断、短路、过载、负载阶跃和温度边界，确认效率、稳定性和器件应力仍满足要求。
+    - 参考：[TI Power Management](https://www.ti.com/power-management/overview.html)。

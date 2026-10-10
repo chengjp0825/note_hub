@@ -1,0 +1,64 @@
+company: 华睿科技
+role: 硬件工程师
+year: 2026
+round: 二面（主管面）
+platform: 抖音
+url: null
+author: 抖音 UP 主
+source_type: 平台 UP 主整理
+transcription: 截图逐字整理
+questions:
+  - raw_question: 你本科自动化、研究生控制科学与工程，整体是不是偏自动化？和岗位的匹配点在哪？
+    classification: BEHAVIORAL
+    question_bank_id: null
+  - raw_question: 这个项目是导师课题、企业横向，还是网上课程或自选项目？你具体负责哪部分？
+    classification: BEHAVIORAL
+    question_bank_id: null
+  - raw_question: 这块板卡从原理图、PCB、打板到焊接调试，都是你自己做的吗？还是基于现成开发板或模块？
+    classification: PROJECT
+    question_bank_id: null
+  - raw_question: 板卡回来后功能全部实现了吗？哪些跑通、哪些没跑通？软件或驱动是你移植和调试的吗？遇到问题怎么定位和解决？
+    classification: GENERALIZABLE
+    question_bank_id: huarui-hardware-round2-bringup-debug-004
+  - raw_question: 以太网千兆这块，是链路协商到 1000M，还是实际吞吐也达到千兆？如果跑不上去，是降百兆，还是千兆 link 上了但吞吐低或丢包？
+    classification: GENERALIZABLE
+    question_bank_id: allwinner-ethernet-throughput-009
+  - raw_question: 以太网 PHY 用的什么型号？接口是 RGMII 还是 SGMII？时钟怎么给？差分线是否按 100Ω 控制？变压器或 RJ45 是否支持千兆？
+    classification: GENERALIZABLE
+    question_bank_id: nova-ethernet-phy-003
+  - raw_question: 千兆网最后定位到什么原因？你改了什么？改完结果如何？
+    classification: PROJECT
+    question_bank_id: null
+  - raw_question: PCIe 实际跑在 Gen 几、几 lane？参考时钟是否 100MHz？差分阻抗、AC 耦合、BAR、DMA 怎么处理？有没有协商不到预期速率，怎么排查？
+    classification: GENERALIZABLE
+    question_bank_id: huarui-hardware-round2-pcie-link-debug-008
+  - raw_question: 电源设计你一般关注哪些参数？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round2-power-design-verification-009
+  - raw_question: 输入输出、效率、纹波、动态响应、保护、上电时序，你分别怎么考虑和验证？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round2-power-design-verification-009
+  - raw_question: 动态响应和环路稳定性你怎么调？LDO 和 DCDC 怎么选？纹波怎么测？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round2-power-loop-stability-011
+  - raw_question: 出现过冲、下冲、恢复慢、振铃时，你分别怎么处理？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round2-power-transient-response-012
+  - raw_question: FPGA 选型和评估时关注哪些资源？LUT、FF、BRAM、DSP、PLL、GT、IO、硬核 IP 怎么估？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round2-fpga-resource-selection-013
+  - raw_question: 高速接口主要有哪些？FPGA 常用高速接口有哪些？PCIe、以太网、SATA、USB 3.0 算不算，为什么？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round2-high-speed-interfaces-014
+  - raw_question: FPGA 选型看什么？GT 数量或速率、参考时钟、硬核、BRAM 或 DSP 怎么权衡？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round2-fpga-resource-selection-013
+  - raw_question: 如果没有参考设计，你一个人能搞定复杂 SoC 吗？你会怎么推进？
+    classification: BEHAVIORAL
+    question_bank_id: null
+  - raw_question: 你觉得项目真正难的地方在哪？高速、电源、信号完整性、时序还是 EMC？
+    classification: PROJECT
+    question_bank_id: null
+  - raw_question: 这两个项目都是你自学的吗？导师任务多时会不会冲突？你怎么排优先级、保证两边推进、不影响毕业？
+    classification: BEHAVIORAL
+    question_bank_id: null

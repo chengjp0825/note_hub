@@ -1,0 +1,20 @@
+id: huarui-hardware-round1-bringup-flow-007
+question: 核心板 Bring-up 的基本流程是什么？如何独立调试外设并定位最难的问题？
+roles: [hardware, embedded-linux]
+companies: [华睿科技]
+topic: 测试与系统工程
+tags: [系统架构, 故障定位]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 先做外观、焊接、短路、供电和复位检查，再按电源、时钟、启动介质、存储、低速接口、高速接口的顺序建立基线。
+    - 每一步都记录电源时序、启动日志、波形、温升和版本信息，先确认硬件基本条件，再进入驱动和应用调试。
+    - 对异常现象按照可复现条件、影响范围和信号层级拆分，使用替换模块、已知正常板和单变量实验缩小范围。
+    - 最终通过压力测试、温度测试和回归测试确认问题已经闭环，并保留修改和验证记录。
+    - 参考：[Linux Kernel Documentation](https://docs.kernel.org/)。
+  embedded-linux: |-
+    ## 作答要点
+    - 从 BootROM、引导程序、内核启动到设备节点逐层确认，使用串口日志、dmesg、设备树和驱动状态定位故障层级。
+    - 外设调试按照时钟、复位、引脚复用、供电、总线波形和协议状态依次核对，避免直接修改多个软件参数。
+    - 对偶发问题加入错误计数、复位原因、超时和现场日志，配合压力测试确认故障概率。
+    - 参考：[Linux Kernel Documentation](https://docs.kernel.org/)。

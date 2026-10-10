@@ -1,0 +1,37 @@
+company: 华睿科技
+role: 硬件工程师
+year: 2026
+round: 一面
+platform: 抖音
+url: null
+author: 抖音 UP 主
+source_type: 平台 UP 主整理
+transcription: 截图逐字整理
+questions:
+  - raw_question: 建立时间和保持时间的定义分别是什么？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round1-setup-hold-001
+  - raw_question: DDR 的布局布线要考虑啥，DDR 训练在调什么？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round1-ddr-layout-training-002
+  - raw_question: 这个核心板是你设计的吗？还是参照瑞芯微 demo？
+    classification: PROJECT
+    question_bank_id: null
+  - raw_question: 参照 demo 做了哪些改动？电源树、DDR、设备树？你具体负责哪块？
+    classification: GENERALIZABLE
+    question_bank_id: nova-reference-design-power-010
+  - raw_question: Emmc 有哪几根线？
+    classification: GENERAL
+    question_bank_id: huarui-hardware-round1-emmc-signals-006
+  - raw_question: 核心板回来的 Bring-up 流程是怎样的？你独立调试了哪些外设？最难的问题是什么？
+    classification: GENERALIZABLE
+    question_bank_id: huarui-hardware-round1-bringup-flow-007
+  - raw_question: 假设你入职后，领导任务又急又多，你忙不过来还被骂，你怎么办？
+    classification: BEHAVIORAL
+    question_bank_id: null
+  - raw_question: 如果确实是你的问题，你怎么承认和补救？如果是领导要求不合理，你怎么沟通？
+    classification: BEHAVIORAL
+    question_bank_id: null
+  - raw_question: 反问
+    classification: BEHAVIORAL
+    question_bank_id: null

@@ -1,0 +1,20 @@
+id: huarui-hardware-round2-power-design-verification-009
+question: 电源设计需要关注哪些参数？如何分别考虑和验证输入输出、效率、纹波、动态响应、保护与上电时序？
+roles: [hardware, fpga]
+companies: [华睿科技]
+topic: 电源与硬件设计
+tags: [电源设计]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 先按输入范围、输出电压与电流、启动和稳态负载建立电源树，再核对效率、热、纹波、噪声、瞬态和保护能力。
+    - 输出电容、电感、补偿、去耦和布局要按控制器数据手册及最坏工况选择，不能只按标称电流选型。
+    - 上电验证要同时观察电源轨、使能、PG、复位和关键时钟，检查顺序、上升时间、过冲、下冲和稳定时间。
+    - 纹波和动态响应需要在负载端使用合适探头与带宽限制测量，并在输入、负载、温度和启动边界下重复验证。
+    - 参考：[TI Power Management](https://www.ti.com/power-management/overview.html)。
+  fpga: |-
+    ## 作答要点
+    - FPGA 电源需要分别核对核心、辅助、IO、BRAM、PLL、收发器和外部存储电源的电压、电流和时序要求。
+    - 使用 XPE 或实现后的功耗报告建立电流预算，再核对 regulator 余量、去耦、热设计和动态负载。
+    - 通过启动、配置、满资源切换和收发器压力测试观察电源轨与复位状态，确认电源问题没有被逻辑故障掩盖。
+    - 参考：[AMD Power Analysis and Optimization](https://docs.amd.com/r/en-US/ug907-vivado-power-analysis-optimization)。

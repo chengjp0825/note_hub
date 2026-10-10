@@ -1,7 +1,7 @@
 id: nova-reference-design-power-010
 question: 原理图设计是否完全参考厂家 demo？做了哪些调整？电源设计方面有哪些改动？
 roles: [hardware]
-companies: [诺瓦星云]
+companies: [华睿科技, 诺瓦星云]
 topic: 电源与硬件设计
 tags: [电源设计, PCB]
 answers:

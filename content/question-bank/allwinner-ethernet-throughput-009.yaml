@@ -1,7 +1,7 @@
 id: allwinner-ethernet-throughput-009
 question: 千兆网口吞吐量异常时，如何判断问题属于硬件、驱动还是网络链路？
 roles: [hardware, embedded-linux]
-companies: [全志科技]
+companies: [全志科技, 华睿科技]
 topic: 通信与网络
 tags: [以太网]
 answers:

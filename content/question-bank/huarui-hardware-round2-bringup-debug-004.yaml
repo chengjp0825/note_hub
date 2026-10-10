@@ -1,0 +1,20 @@
+id: huarui-hardware-round2-bringup-debug-004
+question: 板卡功能未全部跑通时，如何区分硬件、软件和驱动问题并完成定位？
+roles: [hardware, embedded-linux]
+companies: [华睿科技]
+topic: 测试与系统工程
+tags: [故障定位, 系统架构]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 先把未跑通拆成不上电、不启动、设备不识别、链路不稳定和性能不足等可观测现象。
+    - 依次检查电源、复位、时钟、焊接、接口波形和连接器，再用已知正常板或替换模块做交叉验证。
+    - 对高速接口记录协商状态、错误计数、眼图或误码，对低速接口记录逻辑电平、时序和协议内容。
+    - 每次只改变一个变量，保留硬件版本、软件版本、日志和波形，修复后使用压力与回归测试确认结果。
+    - 参考：[Linux Kernel Documentation](https://docs.kernel.org/)。
+  embedded-linux: |-
+    ## 作答要点
+    - 软件侧先确认设备树、驱动匹配、时钟和复位配置，再查看 dmesg、sysfs、调试接口和协议工具输出。
+    - 通过最小化测试、旧版本对比、驱动日志和错误计数判断问题是否只在某个内核或配置出现。
+    - 当软件配置正确而多个系统和多块板都复现时，应把证据交给硬件侧继续检查电气链路。
+    - 参考：[Linux Kernel Documentation](https://docs.kernel.org/)。

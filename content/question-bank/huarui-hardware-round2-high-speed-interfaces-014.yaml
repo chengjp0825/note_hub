@@ -1,0 +1,20 @@
+id: huarui-hardware-round2-high-speed-interfaces-014
+question: 常见高速接口有哪些？FPGA 常用高速接口如何判断，PCIe、以太网、SATA 和 USB 3.0 为什么属于或不属于这一类？
+roles: [hardware, fpga]
+companies: [华睿科技]
+topic: 高速接口与 FPGA
+tags: [FPGA, 高速串行接口]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 判断高速接口不能只看名称或频率，还要看传输介质、差分电气特性、线速率、编码、链路训练、通道损耗和协议层。
+    - PCIe、SATA、USB 3.x 和千兆以上以太网通常使用高速差分串行收发器；不同协议的拓扑、训练、参考时钟、均衡和连接器要求不同。
+    - FPGA 选接口时要同时核对器件是否具备对应 GT 或硬核 IP、可用 lane 数、速率、参考时钟和板级通道预算。
+    - 验证需要覆盖链路训练、误码率、眼图或合规测试、吞吐、温度和长时间压力，不能只以接口枚举成功判定设计合格。
+    - 参考：[AMD 7 Series GTX/GTH Transceivers](https://docs.amd.com/r/en-US/ug476_7Series_Transceivers)。
+  fpga: |-
+    ## 作答要点
+    - FPGA 中常见高速接口包括 PCIe、以太网、SATA、USB 3.x、Aurora 和自定义 SerDes，具体能否实现取决于 GT 资源、硬核 IP 和协议 IP。
+    - 评估时核对线速率、编码、lane 数、参考时钟、通道损耗、均衡、复位和 DMA 或用户逻辑带宽。
+    - 通过 IP 配置、收发器状态、链路训练、误码测试和应用吞吐逐层验证，区分物理层、协议层和用户逻辑瓶颈。
+    - 参考：[AMD Vivado Serial Transceiver Wizard](https://docs.amd.com/r/en-US/pg168-gtwizard)。

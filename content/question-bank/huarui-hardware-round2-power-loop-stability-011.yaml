@@ -1,0 +1,14 @@
+id: huarui-hardware-round2-power-loop-stability-011
+question: 如何调试电源动态响应和环路稳定性？LDO 与 DCDC 如何选择，纹波如何测量？
+roles: [hardware]
+companies: [华睿科技]
+topic: 电源与硬件设计
+tags: [电源设计, 模拟电路, 器件选型]
+answers:
+  hardware: |-
+    ## 作答要点
+    - DCDC 适合较大压差或较大电流的高效率转换，LDO 适合低噪声、较小压差或后级净化，选择要同时考虑压差、负载、噪声、PSRR、热和成本。
+    - 环路调试先确认电感、电容、补偿网络和负载范围，再用负载阶跃观察过冲、下冲、恢复时间和振铃。
+    - 稳定性需要结合数据手册推荐范围、环路增益或相位裕量测试，并覆盖输入、负载和温度边界。
+    - 纹波测量应在真实负载端使用短接地弹簧或同轴方式，明确示波器带宽限制、探头位置和测量频段。
+    - 参考：[TI Understanding and Applying Voltage-Mode Control](https://www.ti.com/lit/an/slva301/slva301.pdf)。

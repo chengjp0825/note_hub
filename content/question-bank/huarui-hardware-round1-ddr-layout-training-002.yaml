@@ -1,0 +1,20 @@
+id: huarui-hardware-round1-ddr-layout-training-002
+question: DDR 的布局布线要考虑哪些问题？DDR 训练主要在调整什么？
+roles: [hardware, embedded-linux, fpga]
+companies: [华睿科技]
+topic: 高速接口与 FPGA
+tags: [DDR, 时钟与时序]
+answers:
+  hardware: |-
+    ## 作答要点
+    - 布局先保证控制器、颗粒和电源靠近，按器件厂商规定的拓扑、参考平面、阻抗、长度匹配和层切换规则布线。
+    - DQ、DQS、地址命令和时钟分别遵守组内匹配、组间关系、过孔数量、回流路径和串扰约束，不能只看总长度。
+    - 电源需要低噪声、足够去耦和清晰回流，并把电源完整性、散热和可制造性一起评审。
+    - 训练会根据上电时的器件、板级走线和电压温度条件调整采样延迟、写入延迟、阻抗或校准参数，使数据眼窗口满足控制器要求。
+    - 参考：[Micron DDR4 SDRAM 产品资料](https://www.micron.com/products/dram/ddr4-sdram)。
+  embedded-linux: |-
+    ## 作答要点
+    - 软件侧应确认内存控制器参数、设备树或固件配置与实际颗粒容量、频率、位宽和时序一致。
+    - 启动日志中的训练失败、降频、容量识别错误和随机崩溃要结合温度、压力测试与内存错误定位。
+    - 通过启动阶段日志、内存压力测试和不同温度下的长时间运行验证训练结果，不能只以系统成功启动判定设计完成。
+    - 参考：[Linux EDAC 内存错误检测文档](https://docs.kernel.org/driver-api/edac.html)。
