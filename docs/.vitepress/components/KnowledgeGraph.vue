@@ -1,12 +1,20 @@
 <template>
   <div class="kg-wrap" :style="wrapStyle" ref="stageRef">
-    <canvas ref="canvasRef" class="kg-canvas"></canvas>
+    <canvas ref="canvasRef" class="kg-canvas" aria-hidden="true"></canvas>
+    <nav class="kg-accessible" aria-label="知识图谱文章链接">
+      <ul>
+        <li v-for="node in accessibleNodes" :key="node.key">
+          <a :href="withBase(node.route)">{{ node.label }}</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData, withBase } from 'vitepress'
+import { data as generatedGraph } from '../../knowledge-graph.data'
 
 const props = withDefaults(defineProps<{ height?: number }>(), {
   height: 620
@@ -33,29 +41,6 @@ interface SeedNode {
 
 const { isDark } = useData()
 
-const markdownFiles = (import.meta as ImportMeta & {
-  glob: (pattern: string, options: Record<string, unknown>) => Record<string, string>
-}).glob('../../**/*.md', {
-  eager: true,
-  query: '?raw',
-  import: 'default'
-}) as Record<string, string>
-
-const indexRouteSet = new Set(
-  Object.keys(markdownFiles)
-    .filter((filePath) => /\/index\.md$/i.test(filePath))
-    .map((filePath) => routeFromFilePath(filePath))
-)
-
-const includePrefixes = [
-  '/should-know',
-  '/protocols',
-  '/microcontrollers',
-  '/fpga',
-  '/datasheets',
-  '/interview-questions'
-]
-
 // 工具函数：Hex 转 RGBA 以支持透明度
 function hexToRgba(hex: string, alpha: number) {
   // 处理可能传入的异常 Hex
@@ -67,10 +52,10 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 const fallbackNodes: SeedNode[] = [
-  { key: 'page:/should-know/cloud/personal-cloud-sync', label: '个人云端极速同步方案', kind: 'core' },
-  { key: 'page:/should-know/git/github-action', label: 'GitHub CI/CD', kind: 'project' },
-  { key: 'page:/should-know/si-pi/ac-coupling', label: 'AC 耦合', kind: 'project' },
-  { key: 'page:/should-know/si-pi/differential-signaling-lvds', label: '差分信号与 LVDS', kind: 'normal' }
+  { key: 'page:/should-know/cloud/personal-cloud-sync', label: '个人云端极速同步方案', kind: 'core', route: '/should-know/cloud/personal-cloud-sync.html' },
+  { key: 'page:/should-know/git/github-action', label: 'GitHub CI/CD', kind: 'project', route: '/should-know/git/github-action.html' },
+  { key: 'page:/should-know/si-pi/ac-coupling', label: 'AC 耦合', kind: 'project', route: '/should-know/si-pi/ac-coupling.html' },
+  { key: 'page:/should-know/si-pi/differential-signaling-lvds', label: '差分信号与 LVDS', kind: 'normal', route: '/should-know/si-pi/differential-signaling-lvds.html' }
 ]
 
 const fallbackEdges: Array<[string, string]> = [
@@ -79,195 +64,10 @@ const fallbackEdges: Array<[string, string]> = [
   ['page:/should-know/cloud/personal-cloud-sync', 'page:/should-know/si-pi/ac-coupling']
 ]
 
-function normalizePath(path: string): string {
-  const stack: string[] = []
-  path.split('/').forEach((seg) => {
-    if (!seg || seg === '.') return
-    if (seg === '..') {
-      stack.pop()
-      return
-    }
-    stack.push(seg)
-  })
-  return `/${stack.join('/')}`
-}
-
-function normalizeRoute(route: string): string {
-  let cleaned = route.trim()
-  if (!cleaned) return ''
-
-  cleaned = cleaned.split('#')[0].split('?')[0]
-  if (!cleaned) return ''
-
-  cleaned = cleaned.replace(/\\/g, '/')
-  cleaned = normalizePath(cleaned)
-  cleaned = cleaned.replace(/\.(md|html)$/i, '')
-  cleaned = cleaned.replace(/\/index$/i, '')
-  cleaned = cleaned.replace(/\/+/g, '/')
-
-  if (cleaned !== '/' && cleaned.endsWith('/')) cleaned = cleaned.slice(0, -1)
-  return cleaned || '/'
-}
-
-function routeToStaticHref(route: string): string {
-  const normalized = normalizeRoute(route)
-  if (!normalized || normalized === '/') return '/'
-  if (indexRouteSet.has(normalized)) return `${normalized}/`
-  if (normalized.endsWith('/')) return `${normalized}index.html`
-  return `${normalized}.html`
-}
-
-function routeFromFilePath(filePath: string): string {
-  const routeLike = filePath
-    .replace(/^.*?docs\//, '/')
-    .replace(/\.md$/i, '')
-    .replace(/\/index$/i, '')
-  return normalizeRoute(routeLike)
-}
-
-function isInternalArticleRoute(route: string): boolean {
-  if (!route || route === '/') return false
-  return includePrefixes.some((prefix) => route === prefix || route.startsWith(`${prefix}/`))
-}
-
-function resolveLink(link: string, fromRoute: string): string {
-  const raw = link.trim().replace(/^<|>$/g, '')
-  if (!raw) return ''
-  if (raw.startsWith('http://') || raw.startsWith('https://')) return ''
-  if (raw.startsWith('mailto:') || raw.startsWith('tel:')) return ''
-  if (raw.startsWith('#')) return ''
-
-  if (raw.startsWith('/')) return normalizeRoute(raw)
-
-  const baseDir = fromRoute.replace(/\/[^/]*$/, '') || '/'
-  return normalizeRoute(`${baseDir}/${raw}`)
-}
-
-function extractTitle(markdown: string, fallback: string): string {
-  const fm = markdown.match(/\n?title:\s*(.+)\s*\n/i)
-  if (fm?.[1]) return fm[1].replace(/^['"]|['"]$/g, '').trim()
-
-  const heading = markdown.match(/^#\s+(.+)$/m)
-  if (heading?.[1]) return heading[1].trim()
-  return fallback
-}
-
-function extractLinks(markdown: string, fromRoute: string): Set<string> {
-  const refs = new Set<string>()
-
-  const mdLinkRe = /\[[^\]]*\]\(([^)]+)\)/g
-  let m: RegExpExecArray | null
-  while ((m = mdLinkRe.exec(markdown)) !== null) {
-    const token = m[1].trim().split(/\s+/)[0]
-    const resolved = resolveLink(token, fromRoute)
-    if (isInternalArticleRoute(resolved)) refs.add(resolved)
-  }
-
-  const wikiRe = /\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]/g
-  while ((m = wikiRe.exec(markdown)) !== null) {
-    const token = m[1].trim()
-    const resolved = resolveLink(token, fromRoute)
-    if (isInternalArticleRoute(resolved)) refs.add(resolved)
-  }
-
-  return refs
-}
-
-function kindByDegree(degree: number): NodeKind {
-  if (degree >= 4) return 'core'
-  if (degree >= 2) return 'project'
-  return 'normal'
-}
-
-function normalizeLabel(label: string): string {
-  return label.replace(/\s+/g, ' ').trim()
-}
-
-function buildGraphFromMarkdown(): { nodes: SeedNode[]; edges: Array<[string, string]> } {
-  const labelMap = new Map<string, string>()
-  const outRefs = new Map<string, Set<string>>()
-
-  Object.entries(markdownFiles).forEach(([filePath, content]) => {
-    const route = routeFromFilePath(filePath)
-    if (!isInternalArticleRoute(route)) return
-
-    const fallbackLabel = route.split('/').pop() || route
-    labelMap.set(route, extractTitle(content, fallbackLabel))
-    outRefs.set(route, extractLinks(content, route))
-  })
-
-  const degreeMap = new Map<string, number>()
-  const routeEdgeSet = new Set<string>()
-
-  outRefs.forEach((targets, from) => {
-    targets.forEach((to) => {
-      if (to === from) return
-      const backRefs = outRefs.get(to)
-      if (!backRefs || !backRefs.has(from)) return
-
-      const edgeKey = [from, to].sort().join('::')
-      if (routeEdgeSet.has(edgeKey)) return
-
-      routeEdgeSet.add(edgeKey)
-      degreeMap.set(from, (degreeMap.get(from) || 0) + 1)
-      degreeMap.set(to, (degreeMap.get(to) || 0) + 1)
-    })
-  })
-
-  const conceptByRoute = new Map<string, string>()
-  const conceptLabelMap = new Map<string, string>()
-  const conceptRoutesMap = new Map<string, string[]>()
-
-  labelMap.forEach((label, route) => {
-    const conceptId = normalizeLabel(label)
-    conceptByRoute.set(route, conceptId)
-    if (!conceptLabelMap.has(conceptId)) conceptLabelMap.set(conceptId, label)
-    const routes = conceptRoutesMap.get(conceptId) || []
-    routes.push(route)
-    conceptRoutesMap.set(conceptId, routes)
-  })
-
-  const conceptDegreeMap = new Map<string, number>()
-  const conceptEdgeSet = new Set<string>()
-  routeEdgeSet.forEach((pair) => {
-    const [a, b] = pair.split('::')
-    const ca = conceptByRoute.get(a)
-    const cb = conceptByRoute.get(b)
-    if (!ca || !cb || ca === cb) return
-
-    const edgeKey = [ca, cb].sort().join('::')
-    if (conceptEdgeSet.has(edgeKey)) return
-
-    conceptEdgeSet.add(edgeKey)
-    conceptDegreeMap.set(ca, (conceptDegreeMap.get(ca) || 0) + 1)
-    conceptDegreeMap.set(cb, (conceptDegreeMap.get(cb) || 0) + 1)
-  })
-
-  const pickPrimaryRoute = (routes: string[]): string | undefined => {
-    if (!routes.length) return undefined
-    return [...routes].sort((a, b) => {
-      const da = degreeMap.get(a) || 0
-      const db = degreeMap.get(b) || 0
-      if (db !== da) return db - da
-      return a.localeCompare(b)
-    })[0]
-  }
-
-  const nodes: SeedNode[] = Array.from(conceptDegreeMap.keys()).map((conceptId) => ({
-    key: `concept:${conceptId}`,
-    label: conceptLabelMap.get(conceptId) || conceptId,
-    kind: kindByDegree(conceptDegreeMap.get(conceptId) || 0),
-    route: pickPrimaryRoute(conceptRoutesMap.get(conceptId) || [])
-  }))
-
-  const edges: Array<[string, string]> = Array.from(conceptEdgeSet).map((pair) => {
-    const [a, b] = pair.split('::')
-    return [`concept:${a}`, `concept:${b}`]
-  })
-
-  if (!nodes.length || !edges.length) return { nodes: fallbackNodes, edges: fallbackEdges }
-  return { nodes, edges }
-}
+const graphData = generatedGraph.nodes.length && generatedGraph.edges.length
+  ? generatedGraph
+  : { nodes: fallbackNodes, edges: fallbackEdges }
+const accessibleNodes = computed(() => graphData.nodes.filter((node): node is SeedNode & { route: string } => Boolean(node.route)))
 
 const stageRef = ref<HTMLDivElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
@@ -286,8 +86,6 @@ onMounted(() => {
 
   const ctx = canvas.getContext('2d')
   if (!ctx) return
-
-  const graphData = buildGraphFromMarkdown()
 
   const map = new Map<string, GraphNode>()
   graphData.nodes.forEach((seed, i) => {
@@ -320,7 +118,7 @@ onMounted(() => {
     scale: 1, targetScale: 1,
     tx: 0, targetTx: 0, ty: 0, targetTy: 0,
     panning: false, draggingNode: null as GraphNode | null,
-    pointerX: 0, pointerY: 0, hoverAnimTime: 0,
+    pointerX: 0, pointerY: 0, pointerDownX: 0, pointerDownY: 0, hoverAnimTime: 0,
     hoverNode: null as GraphNode | null,
     focusNode: null as number | null
   }
@@ -540,6 +338,7 @@ onMounted(() => {
     const hit = findNodeAt(wpos.x, wpos.y)
     
     state.pointerX = e.clientX; state.pointerY = e.clientY
+    state.pointerDownX = e.clientX; state.pointerDownY = e.clientY
     if (hit) { state.draggingNode = hit; hit.fixed = true } 
     else { state.panning = true }
     stage.setPointerCapture(e.pointerId)
@@ -581,13 +380,14 @@ onMounted(() => {
     const wpos = toWorld(e.clientX - rect.left, e.clientY - rect.top)
     const hit = findNodeAt(wpos.x, wpos.y)
     
-    const isClick = !state.panning && (state.draggingNode === null || (Math.abs(state.draggingNode.vx) < 1 && Math.abs(state.draggingNode.vy) < 1))
+    const pointerDistance = Math.hypot(e.clientX - state.pointerDownX, e.clientY - state.pointerDownY)
+    const isClick = pointerDistance <= 5
 
     state.draggingNode = null; state.panning = false
     stage.style.cursor = state.hoverNode ? 'pointer' : 'grab'
 
     if (isClick && hit?.route) {
-      window.location.href = withBase(routeToStaticHref(hit.route))
+      window.location.href = withBase(hit.route)
     } else if (isClick) {
       smoothFocus(hit)
     }
@@ -655,5 +455,34 @@ onUnmounted(() => {
   height: 100%; 
   display: block; 
   touch-action: none; 
+}
+
+.kg-accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.kg-accessible:focus-within {
+  position: absolute;
+  z-index: 2;
+  inset: 12px auto auto 12px;
+  width: min(420px, calc(100% - 24px));
+  height: auto;
+  max-height: calc(100% - 24px);
+  padding: 16px;
+  margin: 0;
+  overflow: auto;
+  clip: auto;
+  white-space: normal;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg);
 }
 </style>

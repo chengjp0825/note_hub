@@ -3,6 +3,10 @@ title: 个人云端极速同步方案
 icon: cloud
 ---
 
+<script setup>
+import KnowledgeGraph from '../../.vitepress/components/KnowledgeGraph.vue'
+</script>
+
 #  个人云端极速同步方案：Docker + WebDAV + Obsidian
 
 这篇文章将介绍一套适合个人开发者的云端极速同步方案。
@@ -29,7 +33,7 @@ Obsidian 是一款基于本地 Markdown 文件的强大知识库与笔记软件�
 
 ### 实时关系图谱（Canvas）
 
-下面这个图谱基于原生 Vue `canvas` 实现，不是静态图片，也不是 iframe，由 GPT-5.3 创作并持续维护。
+下面这个图谱基于原生 Vue `canvas` 实现，由 GPT-5.3 创作并持续维护。
 
 <KnowledgeGraph :height="420" />
 
@@ -46,105 +50,150 @@ Obsidian 是一款基于本地 Markdown 文件的强大知识库与笔记软件�
 
 ## 事前准备
 
-- **一台云服务器**：本文以阿里云 Ubuntu 系统为例（需带有公网 IP）。
-    
-- **基础环境**：服务器已安装好 Docker 环境。
-    
-- **本地软件**：电脑或手机已安装 Obsidian，并在插件市场安装好 `Remotely Save` 插件。
-    
-- **规划参数**：
-    
-    - **访问端口**：`8888`
-        
-    - **WebDAV 账号**：`obsidian`
-        
-    - **WebDAV 密码**：`obsidian`
-        
-    - **数据挂载目录**：`~/OBSIDIAN_WEBDAV`
-        
-目前的 WebDAV 同步方案，以及我们在这台服务器上将要通过 `docker run -p 8888:80` 暴露的服务，本质上是建立在纯 HTTP 协议之上的。如果你对 HTTP 比较陌生，可以跳转至本站 [HTTP 协议](../../protocols/network/http.md) 查阅相关信息。
+- 一台具有公网 IP 的 Linux 云服务器，并已安装 Docker Compose。
+- 一个属于你的域名，例如 `dav.example.com`。
+- 域名的 A 或 AAAA 记录已经指向云服务器。
+- 云安全组和系统防火墙放行 TCP 80、443；SSH 端口只允许可信来源地址。
+- 电脑或手机已经安装 Obsidian 与 `Remotely Save` 插件。
 
----
+本方案使用 rclone 提供 WebDAV 服务，使用 Caddy 自动申请和续期 HTTPS 证书。WebDAV 容器只连接内部 Docker 网络，公网入口只有 HTTPS。
 
-## Docker + WebDAV 配置
+## 创建部署目录和秘密配置
 
-受限于国内网络环境，直接从 Docker Hub 拉取镜像可能会遇到 `403 Forbidden` 或 `i/o timeout`。因此，本配置采用国内目前可用的镜像加速代理（如 `docker.1panel.live`）。
-
-### 1. 创建数据目录并赋予最高权限
-
-在服务器终端执行以下命令。**注意：赋权这一步极其关键**，如果不执行 `chmod 777`，会导致 Docker 容器内的程序没有权限写入文件，Obsidian 同步时会报错。
-
-```Bash
-# 创建存放笔记的目录
-mkdir -p ~/OBSIDIAN_WEBDAV
-
-# 赋予最高读写权限
-sudo chmod -R 777 ~/OBSIDIAN_WEBDAV
+```bash
+mkdir -p ~/obsidian-webdav
+cd ~/obsidian-webdav
+umask 077
+printf 'WEBDAV_DOMAIN=dav.example.com\nWEBDAV_USER=obsidian\nWEBDAV_PASSWORD=%s\n' "$(openssl rand -base64 32)" > .env
+chmod 600 .env
 ```
 
-### 2. 运行 WebDAV 容器
+将 `dav.example.com` 改成你的域名。`.env` 保存访问凭据，文件权限只允许当前用户读取。
 
-使用 Bytemark 提供的轻量级 WebDAV 镜像，通过加入国内代理前缀直接拉取并运行：
+创建 `compose.yaml`：
 
-```Bash
-docker run -d \
-  --name webdav \
-  --restart always \
-  -p 8888:80 \
-  -v ~/OBSIDIAN_WEBDAV:/var/lib/dav \
-  -e AUTH_TYPE=Basic \
-  -e USERNAME=obsidian \
-  -e PASSWORD=obsidian \
-  docker.1panel.live/bytemark/webdav:latest
+```yaml
+services:
+  webdav:
+    image: rclone/rclone@sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5
+    command:
+      - serve
+      - webdav
+      - /data
+      - --addr=:8080
+      - --user=${WEBDAV_USER}
+      - --pass=${WEBDAV_PASSWORD}
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - webdav-data:/data
+    networks:
+      - internal
+
+  caddy:
+    image: caddy@sha256:d8542f48d34a9cf4e4c11a478865229840e87e4c96ea3f439101f31a5d35f75f
+    restart: unless-stopped
+    environment:
+      WEBDAV_DOMAIN: ${WEBDAV_DOMAIN}
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - internal
+
+networks:
+  internal:
+
+volumes:
+  webdav-data:
+  caddy-data:
+  caddy-config:
 ```
 
-### 3. 配置防火墙（最容易踩坑的一步）
+镜像使用内容摘要固定。升级镜像时应先读取发布说明，在测试环境验证同步与恢复，再更新摘要。
 
-容器跑起来后，外网默认是无法访问的，必须开启双重防火墙放行 `8888` 端口。
+创建 `Caddyfile`：
 
-- **阿里云安全组（外层网关）**： 进入阿里云控制台 -> 实例详情 -> 安全组 -> 入方向规则 -> 手动添加：
-    
-    - **协议类型**：`自定义 TCP`
-        
-    - **端口范围**：`8888/8888`
-        
-    - **授权对象**：`0.0.0.0/0`
-        
-- **Ubuntu 系统防火墙 (内层，若已开启 UFW)**： 执行 `sudo ufw allow 8888/tcp` 放行端口。
-    
+```text
+{$WEBDAV_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy webdav:8080
 
-> **测试方法**：在浏览器地址栏输入 `http://{公网IP}:8888`，如果弹出输入用户名和密码的提示框，则说明服务端部署彻底成功。
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options "nosniff"
+    Referrer-Policy "no-referrer"
+  }
+}
+```
 
----
+启动服务：
+
+```bash
+docker compose config
+docker compose up -d
+docker compose ps
+curl --fail --silent --show-error --head "https://$(sed -n 's/^WEBDAV_DOMAIN=//p' .env)/"
+```
+
+最后一条命令收到 `401 Unauthorized` 表示 HTTPS、域名和 WebDAV 身份验证均已工作。
+
+## 配置防火墙
+
+云安全组与系统防火墙只开放以下入口：
+
+- TCP 80：证书签发和 HTTPS 跳转。
+- TCP 443、UDP 443：HTTPS 与 HTTP/3。
+- SSH：限制为管理者的固定来源地址。
+
+WebDAV 的 8080 端口只存在于内部 Docker 网络，无需加入公网安全组。
 
 ## Obsidian 配置
 
-打开本地 Obsidian 软件，进入第三方插件 `Remotely Save` 的设置页面：
+打开 `Remotely Save` 设置页面并填写：
 
-1. **选择远程服务**：选择 `WebDAV`
-    
-2. **服务器地址**：填写 `http://{公网IP}:8888/` （注意：如果是 HTTP，千万别填成 HTTPS，末尾建议带上斜杠）
-    
-3. **用户名**：`obsidian`
-    
-4. **密码**：`obsidian`
-    
-5. **身份验证**：选择 `Basic`
-    
-6. 点击**“检查”**按钮。如果提示连接成功，即可回到左侧边栏点击“同步”图标，开始你的云端同步之旅！
-    
+1. 远程服务：`WebDAV`
+2. 服务器地址：`https://dav.example.com/`
+3. 用户名：读取 `.env` 中的 `WEBDAV_USER`
+4. 密码：读取 `.env` 中的 `WEBDAV_PASSWORD`
+5. 身份验证：`Basic`
 
----
+点击“检查”确认连接。首次同步以前，先复制一份本地笔记目录作为离线备份。
 
-## FAQ
+## 备份与恢复验证
 
-**Q1：浏览器访问 `http://{公网IP}:8888` 一直转圈，提示“当前无法使用此页面”或“连接超时”怎么办？** **A：** 99% 的概率是防火墙没开。请去云服务器后台（如阿里云、腾讯云的安全组）检查是否开放了 TCP 8888 端口。如果在服务器内通过 `curl -I http://127.0.0.1:8888` 能返回 `401 Unauthorized`，说明容器正常，完全是外层防火墙拦截的问题。
+WebDAV 同步无法代替备份。定期导出命名卷，并实际验证恢复过程：
 
-**Q2：Obsidian 能连上服务器，但一点击同步就报错“403 Forbidden”或“无法写入”？** **A：** Linux 的目录权限问题。Docker 映射出来的物理文件夹当前用户没有写权限。请在服务器终端执行 `sudo chmod -R 777 ~/OBSIDIAN_WEBDAV` 即可解决。
+```bash
+docker run --rm \
+  -v obsidian-webdav_webdav-data:/source:ro \
+  -v "$PWD/backups:/backup" \
+  alpine@sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8 \
+  tar -czf "/backup/obsidian-$(date +%F).tar.gz" -C /source .
+```
 
-**Q3：配置 `docker run` 时提示 `Unable to find image...` 然后报错 `403` 或者 `Timeout`？** **A：** 国内网络无法直连 Docker Hub。请在镜像名 `bytemark/webdav:latest` 前加上代理站前缀，例如 `docker.1panel.live/` 或 `dockerpull.org/`。如果所有代理都失效，可以通过本地下载 `.tar` 镜像包，使用 `scp` 传到服务器后 `docker load -i` 导入。
+备份目录应继续复制到另一台设备或独立对象存储，并设置独立的访问凭据。
 
-**Q4：目前的 HTTP 协议同步安全吗？** **A：** HTTP 是明文传输，如果你所处的公共 Wi-Fi 环境被监听，账号密码存在泄露风险。如果是非常隐私的笔记，建议后续进阶玩法：部署 Nginx 反向代理 WebDAV 的 8888 端口，并挂载 SSL 证书，启用 HTTPS 加密传输。
+## 故障检查
+
+- `docker compose ps`：确认两个容器处于运行状态。
+- `docker compose logs caddy`：检查域名解析和证书签发。
+- `docker compose logs webdav`：检查身份验证和文件访问错误。
+- `curl -I https://dav.example.com/`：确认公网入口返回 HTTPS 响应。
+- `docker volume inspect obsidian-webdav_webdav-data`：确认数据卷存在。
 
 ---
 

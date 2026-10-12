@@ -17,18 +17,13 @@ export default {
     }
   },
 
-  // Mermaid is loaded on demand and ships a few intentionally large diagram chunks.
+  // 大型功能必须保留为按需加载，构建警告用于防止首次加载体积回升。
   vite: {
     build: {
-      chunkSizeWarningLimit: 2500,
+      chunkSizeWarningLimit: 750,
       rollupOptions: {
-        onwarn(warning, warn) {
-          if (warning.code === 'EVAL' && warning.id?.includes('node_modules/mathjax-full')) return
-          warn(warning)
-        },
         output: {
           manualChunks(id) {
-            if (id.includes('node_modules/mathjax-full') || id.includes('node_modules/markdown-it-mathjax3')) return 'mathjax'
             if (id.includes('node_modules/cytoscape')) return 'cytoscape'
             return undefined
           }

@@ -23,7 +23,7 @@ async function renderChart() {
   const dark = document.documentElement.classList.contains('dark')
 
   mermaid.initialize({
-    securityLevel: 'loose',
+    securityLevel: 'strict',
     startOnLoad: false,
     theme: dark ? 'dark' : pageTheme || 'default'
   })

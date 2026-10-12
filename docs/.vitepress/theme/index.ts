@@ -5,12 +5,9 @@ import { defineAsyncComponent } from 'vue'
 import './style.css'
 import './custom.css'
 
-const KnowledgeGraph = defineAsyncComponent(() => import('../components/KnowledgeGraph.vue'))
-
 export default {
   extends: DefaultTheme,
   enhanceApp({ app, router }) {
-    app.component('KnowledgeGraph', KnowledgeGraph)
     app.component(
       'Mermaid',
       defineAsyncComponent(() => import('../components/Mermaid.vue'))
@@ -73,21 +70,24 @@ export default {
       }
 
       const syncQuestionBankSidebarFromFilter = () => syncQuestionBankSidebar()
+      let syncZoom = () => {}
 
       const previousAfterRouteChanged = router.onAfterRouteChanged
       router.onAfterRouteChanged = async (to) => {
         await previousAfterRouteChanged?.(to)
         syncQuestionBankSidebar()
+        syncZoom()
       }
       window.addEventListener('question-bank-filter-change', syncQuestionBankSidebarFromFilter)
       window.addEventListener('popstate', syncQuestionBankSidebarFromFilter)
       syncQuestionBankSidebar()
 
       import('medium-zoom').then((mediumZoom) => {
-        mediumZoom.default('img', {
+        const zoom = mediumZoom.default('img', {
           margin: 24,
           background: 'rgba(0,0,0,0.85)'
         })
+        syncZoom = () => requestAnimationFrame(() => zoom.attach('img'))
       })
     }
   }

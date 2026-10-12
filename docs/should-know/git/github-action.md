@@ -1,5 +1,5 @@
 ---
-title: AC 耦合
+title: GitHub CI/CD
 icon: wave-square
 ---
 

@@ -1,9 +1,11 @@
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import MarkdownIt from 'markdown-it';
 
 const repoRoot = process.cwd();
 const docsRoot = path.join(repoRoot, 'docs');
+const markdownParser = new MarkdownIt({ html: false });
 
 function getMarkdownFiles() {
   const args = process.argv.slice(2);
@@ -17,6 +19,19 @@ function getMarkdownFiles() {
   const gitArgs = diffRange
     ? ['diff', diffRange, '--name-only', '--diff-filter=ACMR', '--', 'docs']
     : ['diff', '--cached', '--name-only', '--diff-filter=ACMR', '--', 'docs'];
+  const deletedArgs = diffRange
+    ? ['diff', diffRange, '--name-only', '--diff-filter=D', '--', 'docs']
+    : ['diff', '--cached', '--name-only', '--diff-filter=D', '--', 'docs'];
+  const deleted = execFileSync('git', deletedArgs, {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trim();
+  if (deleted) {
+    return fs.readdirSync(docsRoot, { recursive: true })
+      .map((file) => path.join('docs', String(file)))
+      .filter((file) => /\.(md|mdx)$/i.test(file) && fs.statSync(path.join(repoRoot, file)).isFile());
+  }
+
   const output = execFileSync('git', gitArgs, {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -31,18 +46,20 @@ function getMarkdownFiles() {
 
 function extractLinks(markdown) {
   const links = [];
-  const pattern = /!?\[[^\]]*\]\(([^)]+)\)/g;
-  let match;
-
-  while ((match = pattern.exec(markdown)) !== null) {
-    const raw = match[1].trim();
-    if (!raw) continue;
-
-    // Remove optional title part: (path "title")
-    const target = raw.split(/\s+/)[0].replace(/^<|>$/g, '');
-    if (target) links.push(target);
+  const tokens = markdownParser.parse(markdown, {});
+  for (const token of tokens) {
+    if (token.type !== 'inline' || !token.children) continue;
+    for (const child of token.children) {
+      if (child.type === 'link_open') {
+        const target = child.attrGet('href');
+        if (target) links.push(target);
+      }
+      if (child.type === 'image') {
+        const target = child.attrGet('src');
+        if (target) links.push(target);
+      }
+    }
   }
-
   return links;
 }
 

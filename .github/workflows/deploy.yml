@@ -1,5 +1,5 @@
 # ==============================================================================
-# 👑 NoteHub 云端构建与自动化部署 (极致解耦架构版)
+# NoteHub 云端构建与自动化部署
 # 核心思想：将 Node.js 编译与 Docker 打包分离，实现构建速度与资源占用的双重最优化。
 # 维护者：NoteHub程
 # ==============================================================================
@@ -33,7 +33,7 @@ jobs:
   # 职责：在 GitHub 宿主机原生环境中编译静态文件，随后打包为轻量级 Nginx 镜像
   # ============================================================================
   build:
-    runs-on: ubuntu-latest # 使用 GitHub 提供的最新干净 Ubuntu 虚拟机
+    runs-on: ubuntu-24.04
     
     # 权限提权：默认 GHA Token 没有写入包的权限，必须显式声明
     permissions:
@@ -43,15 +43,15 @@ jobs:
     steps:
       # --- 步骤 1：拉取源码 ---
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           # fetch-depth: 1 开启浅克隆。我们不需要 Git 历史记录，这能节省几秒的拉取时间。
           # 注意：如果你的 VitePress 需要读取 Git 历史来生成 "最后更新时间"，请将此值改为 0。
           fetch-depth: 1
 
-      # --- 步骤 2：配置极速 Node.js 环境 (提速核心) ---
+      # --- 步骤 2：配置 Node.js 环境 ---
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: '22' # 匹配你依赖树要求的最高 Node 版本，避免 EBADENGINE 警告
           cache: 'npm'       # 自动开启 npm 模块级别的缓存，实现秒级依赖安装
@@ -70,11 +70,11 @@ jobs:
 
       # --- 步骤 4：初始化 Docker 高级构建引擎 ---
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
 
       # --- 步骤 5：登录 GitHub 容器镜像仓库 ---
       - name: Log in to the Container registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}         # 触发 Actions 的用户
@@ -83,11 +83,11 @@ jobs:
       # --- 步骤 6：基于极简 Dockerfile 打包并推送镜像 ---
       # 此时的 Dockerfile 只需要 FROM nginx:alpine 并 COPY dist 目录即可，极为迅速。
       - name: Build and push Docker image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: . # 构建上下文限定在当前根目录
           push: true # 构建成功后立即推送到云端仓库
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest # 始终覆盖 latest 标签
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           
           # 架构级缓存策略：利用 GitHub Actions 原生缓存存储 Docker 层
           # mode=max 表示缓存所有构建步骤的层，最大化降低后续构建的网络和 CPU 消耗
@@ -96,18 +96,18 @@ jobs:
 
   # ============================================================================
   # 阶段二：部署阶段 (Deploy)
-  # 职责：登录远端 Linux 服务器，拉取最新镜像，平滑重启容器
+  # 职责：登录远端 Linux 服务器，验证候选镜像并保留上一版本容器
   # ============================================================================
   deploy:
     needs: build # 强依赖：如果 build 阶段失败，deploy 阶段将自动取消，保护生产环境
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: read
     steps:
       # --- 步骤 7：通过 SSH 登录宿主机执行更新脚本 ---
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
         with:
           # 安全守则：严禁明文密码！以下凭证全部从 GitHub Secrets 安全读取
           host: ${{ secrets.REMOTE_HOST }}         # 宿主机 IP (如 1.2.3.4)
@@ -115,52 +115,72 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}      # SSH 私钥，确保通信加密防中间人攻击
           
           script: |
-            set -e
+            set -eu
 
-            # 1. 宿主机身份认证：使用当前工作流的短期令牌登录 GHCR
-            echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            
-            # 2. 静默拉取最新镜像：加入 -q 参数隐藏繁杂的下载进度条，防止撑爆 SSH 终端输出缓冲
-            sudo docker pull -q ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            
-            # 3. 保留旧容器作为回滚副本，再释放生产端口
+            image="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+            echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            sudo docker pull --quiet "$image"
+
+            sudo docker rm -f vitepress-site-candidate >/dev/null 2>&1 || true
+            sudo docker run -d \
+              --name vitepress-site-candidate \
+              --publish 127.0.0.1:18080:8080 \
+              --read-only \
+              --tmpfs /tmp:rw,noexec,nosuid,size=16m \
+              --cap-drop ALL \
+              --security-opt no-new-privileges \
+              "$image"
+
+            candidate_ok=false
+            for attempt in 1 2 3 4 5 6 7 8 9 10; do
+              if curl --fail --silent --show-error http://127.0.0.1:18080/ >/dev/null \
+                && curl --fail --silent --show-error http://127.0.0.1:18080/question-bank/ >/dev/null \
+                && curl --fail --silent --show-error http://127.0.0.1:18080/generated/question-bank/details-00.json >/dev/null; then
+                candidate_ok=true
+                break
+              fi
+              sleep 2
+            done
+
+            if [ "$candidate_ok" != true ]; then
+              sudo docker logs vitepress-site-candidate
+              sudo docker rm -f vitepress-site-candidate
+              exit 1
+            fi
+            sudo docker rm -f vitepress-site-candidate
+
             sudo docker rm -f vitepress-site-rollback >/dev/null 2>&1 || true
             if sudo docker container inspect vitepress-site >/dev/null 2>&1; then
               sudo docker stop vitepress-site
               sudo docker rename vitepress-site vitepress-site-rollback
             fi
 
-            # 4. 启动新版 NoteHub 并检查 HTTP 服务
-            deployment_ok=false
-            if sudo docker run -d \
-                --name vitepress-site \
-                -p 127.0.0.1:8080:80 \
-                --restart always \
-                ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest; then
-              for attempt in 1 2 3 4 5; do
-                if sudo docker exec vitepress-site wget -q --spider http://127.0.0.1/; then
-                  deployment_ok=true
-                  break
-                fi
-                sleep 2
-              done
-            fi
+            sudo docker run -d \
+              --name vitepress-site \
+              --publish 127.0.0.1:8080:8080 \
+              --restart unless-stopped \
+              --read-only \
+              --tmpfs /tmp:rw,noexec,nosuid,size=16m \
+              --cap-drop ALL \
+              --security-opt no-new-privileges \
+              "$image"
 
-            # 5. 健康检查失败时自动恢复上一版容器
-            if [ "$deployment_ok" = true ]; then
-              sudo docker rm -f vitepress-site-rollback >/dev/null 2>&1 || true
-            else
-              sudo docker rm -f vitepress-site >/dev/null 2>&1 || true
+            deployment_ok=false
+            for attempt in 1 2 3 4 5; do
+              if curl --fail --silent --show-error http://127.0.0.1:8080/ >/dev/null \
+                && curl --fail --silent --show-error http://127.0.0.1:8080/question-bank/ >/dev/null; then
+                deployment_ok=true
+                break
+              fi
+              sleep 2
+            done
+
+            if [ "$deployment_ok" != true ]; then
+              sudo docker logs vitepress-site
+              sudo docker rm -f vitepress-site
               if sudo docker container inspect vitepress-site-rollback >/dev/null 2>&1; then
                 sudo docker rename vitepress-site-rollback vitepress-site
                 sudo docker start vitepress-site
               fi
               exit 1
             fi
-            # 【安全参数解析】: 
-            # -p 127.0.0.1:8080:80 强制将容器暴露的 80 端口绑定在宿主机的内网(本地)环回地址。
-            # 这意味着外部黑客无法通过 http://IP:8080 直接访问容器，流量必须且只能经过你配置的 Nginx 反向代理与 SSL 卸载。
-            
-            # 6. 系统瘦身：清理被新镜像顶替下来的悬空(dangling)无用镜像，释放云服务器宝贵的 SSD 空间。
-            # 末尾加上 '&' 让其在后台静默运行，不阻塞当前部署流水线的完成状态，让你的 Actions 绿灯亮得更快！
-            sudo docker image prune -f &

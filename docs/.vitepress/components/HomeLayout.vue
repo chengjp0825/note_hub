@@ -349,6 +349,7 @@ const executeCommand = async () => {
             <span class="log-prompt">root@notehub:~#</span>
             <input
               ref="terminalInput"
+              aria-label="NoteHub 命令输入"
               v-model="currentCommand"
               @keydown.enter="executeCommand"
               spellcheck="false"
